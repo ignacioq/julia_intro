@@ -6,7 +6,7 @@ Basic introduction to Julia
 2. Open Sublime Text and install the Package Manager following these instructions: https://packagecontrol.io/installation.
 3. Restart Sublime Text.
 4. Open the Package Manager by typing `Cmd + Shift + P` (`Ctrl + Shift + P` in Windows).
-5. Type `Install Package`, type enter on `Package Control: Install Package`.
+5. Type `Install Package`, press enter on `Package Control: Install Package`.
 6. Type `SendCode` and press enter when on the package name.
 7. Repeat step 5, and but now type `Julia` and press enter.
 8. Restart Sublime Text.
