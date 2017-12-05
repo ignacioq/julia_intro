@@ -12,18 +12,30 @@ i.   the official: https://docs.julialang.org/en/stable/
 ii.  wiki books: https://en.wikibooks.org/wiki/Introducing_Julia
 iii. stack overflow...
 
-For performance this book: 
+For performance this book:
   Julia High Performance by Avik Sengupta,
 available through the Yale library,
 ...but some of it is out of date.
 
 To use the REPL (Read Evaluate Print Loop)
 
-# This is a comment
-
- - Cmd + Enter sends the code if the line at which the cursor is at. 
+ - Cmd + Enter sends the code if the line at which the cursor is at.
  - Highlight and Cmd + Enter sends the highlighted code to the REPL
 """
+
+# This is a comment
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Access documentation
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+# type `?` followed by the command
+
+# use `apropos()` to search the documentation for function
+apropos("product")
+
+
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ## Variables
@@ -39,6 +51,7 @@ a
 
 # some variable are already defined
 π
+pi
 e
 
 # we can redefine them, but it will give a Warining
@@ -52,7 +65,7 @@ e
 # Do not use `.` in variable names, they represent `fields` in types
 a.1 = 2
 
-# you can use underscores, although discouraged if not necessary 
+# you can use underscores, although discouraged if not necessary
 a_1 = 2
 
 # some few names cannot be used for variables
@@ -61,10 +74,10 @@ end  = "Hi"
 
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-## Basic Types 
+## Basic Types
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-# Types are organized in hierarchically 
+# Types are organized in hierarchically
 """
 Number -> Complex
        -> Real    -> Irrational
@@ -72,7 +85,7 @@ Number -> Complex
                   -> Integer          -> BigInt
                                       -> Bool
                                       -> Signed -> Int128
-                                                -> Int64 
+                                                -> Int64
                                                 -> ...
                                       -> Unsigned ...
                   -> AbstractFloat    -> BigFloat
@@ -85,10 +98,9 @@ Number -> Complex
 # Numeric Types
 
 ## Boolean
-false
 true
 
-# get the type 
+# get the type
 typeof(false)
 
 # get the super type
@@ -100,16 +112,15 @@ supertype(Bool)
 subtypes(Integer)
 subtypes(Signed)
 
-
 Integer <: Signed
 Signed <: Integer
 
 
-# Integer is Int64 by default in 64-bit architecture 
+# Integer is Int64 by default in 64-bit architecture
 # and Int32 in 32-bit architecture
 1
 
-# `ans` returns the last evaluated value 
+# `ans` returns the last evaluated value
 typeof(ans)
 
 # `versioninfo()` returns the version and platform
@@ -142,13 +153,14 @@ whos()
 
 
 ## Float
-# Float is Float64 by default in 64-bit architecture 
+# Float is Float64 by default in 64-bit architecture
 # and Float32 in 32-bit architecture
 1.0
 typeof(ans)
 
 # the minimum and maximum Float type is -Inf & Inf
-typemin(Float64); typemax(Float64)
+typemin(Float64)
+typemax(Float64)
 
 # Not a Number, `NaN` is a Float64
 NaN
@@ -168,7 +180,6 @@ Int64(1.0)
 zero(Int64)
 one(Float64)
 
-
 ###
 # Strings
 
@@ -181,19 +192,14 @@ one(Float64)
 "Hi"
 typeof(ans)
 
-s = """Hello there"""
+s = """
+    Hello there
+    This is a Julia Workshop
+    """
 
 # you can subset a string and get a `Char`
 s[1]
 s[6]
-
-
-## Create a type and hierarchy
-abstract type Country end
-type USA <: Country end
-type Colombia <: Country end
-type France <: Country end
-subtypes(Country)
 
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -216,8 +222,6 @@ subtypes(Country)
 # product
 3 * 2
 3 / 2
-*(4,5)
-/(4,5)
 *(2,3,5)
 
 #power
@@ -225,21 +229,14 @@ subtypes(Country)
 
 #remainder
 20%3
-rem(20,3)
 
-# common math functions
+# other common math functions
 sqrt(9)
 √9
 log(10)
 log(e)
-log(pi)
-log(π)
+sin(π)
 exp(2)
-
-
-# floor division
-/(5,1.4)
-fld(5,1.4)
 
 # numeric literal
 x = 5
@@ -275,15 +272,16 @@ string("Hello ", "world")
 # you can use string interpolation with `$`
 s1 = "Hello "
 s2 = "world"
+
+"s1s2"
 "$s1$s2"
 
 # it works with inside evaluation
 "1+4 = $(1+4)"
 
 
-
 """
-Exercise: 
+Exercise:
 
 1. Guess the result and type of the following commands, then evaluate
 """
@@ -299,6 +297,7 @@ Inf * -Inf
 "0" + 0
 3/0
 0/0
+fld(5,3)
 0.0 == -0.0
 0   == -0.0
 NaN == NaN
@@ -311,11 +310,24 @@ div(2,1)
 x = 2; x ^= 4
 
 
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Integrating with shell, R and Python
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+
+"""
+Use R demonstration
+
+"""
+
+
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Vectors and Arrays
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-## vectors are delimited by suing `[` and  `]`
+## vectors are delimited by using square brackets `[` and  `]`
 x = [2, 3, 5]
 typeof(x) == Vector{Int64}
 
@@ -325,7 +337,7 @@ x = [2, 3.0, 5]
 # you can force it to be integers
 x = Int64[2, 3.0, 5]
 
-# but... 
+# but...
 x = Int64[2, 3.1, 5]
 
 # instead
@@ -335,10 +347,9 @@ x = Float64[2, 3.1, 5]
 x = [2, 3.0, "hi"]
 typeof(x)
 
-# you can subset with an Integer or Integer vector 
+# you can subset with an Integer or Integer vector
 x[1]
-idx = [2,3]
-x[idx]
+x[[2,3]]
 
 # or better with UnitRange
 x[2:3]
@@ -358,37 +369,30 @@ x
 
 ## initialization
 # zeros, by default Float64
-v = zeros(100)
+v = zeros(10)
 
 # zeros as integer
-v = zeros(Int64,100)
-
-# as Bool
-v = zeros(Bool,100)
-
-# alternatively
-v = trues(100)
-v = falses(100)
+v = zeros(Int64,10)
 
 # ones work similarly
-v = ones(100)
+v = ones(10)
 
-# start with any value
-v = fill(NaN,100)
-v = fill(2.447, 100)
+# create a vector with any value
+v = fill(NaN,10)
+v = fill("hi", 10)
 
 ## UnitRange and StepRange
-ur = 1:100
+ur = 1:10
 typeof(ur)
 
 # you can also declare UnitRanges with
 colon(1,10)
 
-# you can subset UnitRange 
-ur[10]
+# you can subset UnitRange
+ur[2]
 
 # However you cannot assign
-ur[10] = 5
+ur[2] = 5
 
 # convert into vector and assign
 v = collect(ur)
@@ -400,27 +404,12 @@ sr = 1:2:6
 typeof(sr)
 1:2:6 == colon(1,2,6)
 
-# range construction is `start:step:length`
-r = range(1,2,6)
-[r...]
-
-
-# you can index but not assign as with UnitRange
-sr[end]
-sr[2] = 1
-
-v = collect(sr)
-
 # also works with Floats
 sr = 1.0:0.1:2.0
 v = collect(sr)
 
-# this can also be achieved with 
-v = [sr...]
-
-# linspace construction is `start:end:length`
-ls = linspace(1, 100, 12)
-[ls...]
+# this can also be achieved with
+[sr...] == collect(sr)
 
 
 ## Comprehensions
@@ -430,14 +419,14 @@ v = [i^2 for i in 1:10]
 # you can add if statement to filter (conditional comprehensions)
 v = [i^2 for i in 1:10 if i != 4]
 
-# a fast vector creation 
+# a fast vector creation
 v = Vector{Int64}(100)
 
-# create an empty vector 
+# create an empty vector
 v = Int64[]
 v = Any[]
 
-# you can have vector of vectors (of vectors, of vectors...)
+# you can have vector of vectors (of vectors, of vectors, ...)
 x = zeros(10)
 v = fill(x, 5)
 u = fill(v, 5)
@@ -446,13 +435,14 @@ typeof(u) == Vector{Vector{Vector{Float64}}}
 
 
 ## Functions on vectors
-
 # fuse two vectors
 x = [1:3...]
-append!(x,[4:5...])
+append!(x,4:5)
 x
 
-# NOTE: functions ending with `!` ("bang") changes the object in place
+"""
+NOTE: functions ending with `!` ("bang") changes the object in place
+"""
 
 # add one or more elements to the end
 push!(x,6)
@@ -467,6 +457,7 @@ splice!(x, 2, 2:3)
 
 # splice also deletes if not provided with a replacement
 splice!(x,3:4)
+x
 
 # remove the last element (and return it)
 pop!(x)
@@ -496,6 +487,30 @@ x
 v = fill!(Array{String}(3), "hello")
 
 
+"""
+Exercises:
+
+1. create a vector of length 10 of type Bool.
+2. understand what `range()` and `linspace()` do.
+2. What is the required step size to have 16 equally spaced values between
+   1.0 and 3.2?
+4. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up
+   `[1,4,3,2,5]`.
+5. Checkout the `filter!()` function and use it to allow only even values
+   in `[1,2,3,6,7,3,1,10,28]`.
+6. What is the difference between `max()` and `maximum()`.
+7. Learn how to use `setdiff()` and find the length of non shared elements
+   between:
+   a = [2,8,4,9]
+   b = [4,2,3,5]
+8. Using `find()`, equality `==`, and vectorized functions, create a vector
+   with the indices that match 1 for the following vector:
+   `[10,11,1,4,5,1,11,1,3,0,2,-1]`
+9. Search for the function that sorts in place (i.e., ends in `!`) and
+   the function that returns the maximum and minimum of a vector.
+"""
+
+
 ## Multi-Dimensional Arrays
 # vectors are an alias of Array{T,1}
 Vector{Any} == Array{Any,1}
@@ -510,28 +525,31 @@ Vector{Any} == Array{Any,1}
 # create along dimensions
 [1 2 3; 4 5 6]
 
+# Matrix is an alias for a two dimensional Array
+Matrix{Any} == Array{Any,2}
+
 # most of the above functions work for multidimensional arrays
 # just add a new dimension size
 
 # create zeros with 10 rows and 5 columns
-a = zeros(10,5)
+A = zeros(10,5)
 
 # create three-dimensional ones
-a = ones(10,5,2)
+A = ones(10,5,2)
 
 # get the number of dimensions and size of each
-ndims(a)
-size(a)
-length(a)
+ndims(A)
+size(A)
+length(A)
 
 # fast construction
-a = Array{Float64}(5,5,3)
+A = Array{Float64}(5,5,3)
 
 # create identity matrix
-a = eye(5)
+A = eye(5)
 
 # create diagonal matrix
-a = diagm(1:5)
+A = diagm(1:5)
 
 # repmat repeats a vector along each dimension
 # repeat in dim one (rows)
@@ -540,58 +558,58 @@ repmat([1,2,3],2,1)
 repmat([1,2,3],1,2)
 
 # 2 dimensional comprehensions
-a = [i*j for i in 1:5, j in 1:5]
+A = [i*j for i in 1:5, j in 1:5]
 
 # 3 dimensional comprehensions
-a = [i*j*h for i in 1:5, j in 1:5, h = 1:5]
+A = [i*j*h for i in 1:5, j in 1:5, h = 1:5]
 
 # reshaping
-a = [1:9...]
-a = reshape(a,3,3)
+v = [1:9...]
+A = reshape(v,3,3)
 
 ## indexing along dimensions
 # 1st & 2nd row, and 3 column
-a[1:2,3]
+A[1:2,3]
 
 # index first row
-a[1,:]
+A[1,:]
 
 # index second column
-a[:,2]
+A[:,2]
 
 # Julia supports efficient linear indexing
-a[1:5]
+A[1:5]
 
 
 ## copying and pointers
 # copy by reference
-b = a
+B = A
 # assing to b
-b[2] = 100
+B[2] = 100
 # it is also changed in a
-a
+A
 
 # you can test if they share memory by using `===`
-a === b
+A === B
 
 # `similar()` copies the dimensions but not the values
-a[:] = 1:9
-b = similar(a)
-b[2] = 100
-a === b
-a
+A[:] = 1:9
+B = similar(A)
+A[2] = 100
+A === B
+A
 
 # shallow `copy()` copies the values as well
-b = copy(a)
-b[2] = 100
-a === b
-a
+B = copy(A)
+B[2] = 100
+A === B
+A
 
 # `deepcopy()` makes a fully independent object (more on this later)
-b = deepcopy(a)
-b[2] = 100
-a === b
-a
+B = deepcopy(A)
+B[2] = 100
+A === B
+A
 
 
 ## Dicitionaries
@@ -610,7 +628,7 @@ d[1]
 d["d"] = 4
 d
 
-# Dictionaries can accommodate almost any type
+# Dictionaries can accommodate almost any object
 d = Dict("unif" => rand(10),
          "norm" => randn(10),
          "exp"  => randexp(10))
@@ -649,7 +667,7 @@ t = (a...)
 
 
 ## Vectorization
-# Julia allows vectorization, as in R, 
+# Julia allows vectorization, as in R,
 # however, I find it less efficient and avoidable
 x = [1:10...]
 y = [1:10...]
@@ -668,32 +686,16 @@ log.(z)
 
 
 """
-Exercises: 
+Exercises:
 
 1. Create an `Int64` identity matrix (10,10) without using `eye(10)`.
-2. Fill the above object such that it is now a Diagonal matrix with 1:10 
+2. Fill the above object such that it is now a Diagonal matrix with 1:10
    without using `diagm()`.
-3. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up 
-   `[1,4,3,2,5]`.
-4. Create a Range that goes from 10 to 1 and then make a new matrix object
+3. Create a Range that goes from 10 to 1 and then make a new matrix object
    with 5 rows, where each row is this range.
-5. Create a 3-dimensional array of size `(5,5,3)` where each element is the 
-   product of the 1d index with the 2d index elevated to the 3d index. 
-6. Checkout the `filter!()` function and use it to allow only even values
-   in `[1,2,3,6,7,3,1,10,28]`.
-7. What is the required step size to have 16 equally spaced values between
-   1.0 and 3.2?
-8. What is the difference between `max()` and `maximum()`.
-9. Learn how to use `setdiff()` and find the length of non shared elements
-   between:
-   a = [2,8,4,9]
-   b = [4,2,3,5]
-10. Using `find()`, equality `==`, and vectorized functions, create a vector 
-    with the indices that match 1 for the following vector:
-    [10,11,1,4,5,1,11,1,3,0,2,-1]
-11. Search for the function that sorts in place and the function that returns
-    the maximum and minimum of a vector.
-12. Create a Dictionary with each integer starting with 1 associated with 
+4. Create a 3-dimensional array of size `(5,5,3)` where each element is the
+   product of the 1d index with the 2d index elevated to the 3d index.
+5. Create a Dictionary with each integer starting with 1 associated with
     each letter in the alphabet using comprehensions.
 """
 
@@ -724,7 +726,7 @@ rand(S)
 
 # check that it is uniform pick (1/3 for 7)
 x = [rand(S) for i in 1:10_000]
-length(filter(isodd,x))/length(x)
+mean(isodd, x)
 
 # draw from the Normal distribution N(0,1)
 randn()
@@ -760,7 +762,7 @@ prod(x)
 mean(exp, x)
 
 
-# Pearson correlation and covariance 
+# Pearson correlation and covariance
 y = randn(1_000).*0.1
 cor(x, y)
 cov(x, y)
@@ -799,7 +801,7 @@ A = reshape([1:9...],3,3)
 # rotate 180 degrees
 rot180(A)
 
-# Julia allows you to specify certain characteristics of Matrices to 
+# Julia allows you to specify certain characteristics of Matrices to
 # handle them more efficiently (e.g.,Symmetric, UpperTriangular,
 # Diagonal, etc.)
 B = [1 2 -3.0;
@@ -819,40 +821,30 @@ B
 
 
 """
-Exercise: 
+Exercise:
 
 1. Estimate the standard deviation among the differences between the estimated
-   mean of 1_000 `randexp()` and 1.0, for 10_000 replicates (tip: see the 
+   mean of 1_000 `randexp()` and 1.0, for 10_000 replicates (tip: see the
    documentation of `mean()`).
-2. Let `A = reshape([1:9...],3,3)`, what does circshift(A, (1,1)) do? what does 
+2. Let `A = reshape([1:9...],3,3)`, what does circshift(A, (1,1)) do? what does
    rot180(A)? what does flipdim(A,1)?
 3. Get the eigenvalues for a matrix.
 """
 
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Control Flow 
+# Control Flow
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-# compound expressions
-c = (a = 1; b = 2; a + b)
-
-# equivalent to
-c = begin
-    a = 1
-    b = 2
-    a + b
-end
 
 
 ## if conditional
 x = 5
-if x > 4 
-  println("hello") 
+if x > 4
+  println("hello")
 end
 
 # variables defined within if statements are available in the outer scope
-if x > 4 
+if x > 4
   y = 1
 end
 y
@@ -863,10 +855,10 @@ r = if x > 3
     elseif x == 3
       "$x is 3"
     else
-      "$x is smaller than 3" 
+      "$x is smaller than 3"
     end
 
-# ternery operators 
+# ternery operators
 x = 3; y = 1
 
 x > y ? x : y
@@ -933,13 +925,14 @@ for s in S
   println(s)
 end
 
-# iterate over array
+# iterate over array (note the `∈` == in == `=` in loops)
 A = rand(5, 5)
 s = 0.0
 for i ∈ A
   s += i
 end
 sum(A) == s
+
 
 ## common iterators
 # iterate for the length of a vector
@@ -948,7 +941,7 @@ for i = eachindex(v)
   println(i)
 end
 
-# create a tuple with the iteration and the value of v 
+# create a tuple with the iteration and the value of v
 for i = enumerate(v)
   println(i)
 end
@@ -979,14 +972,14 @@ end
 
 
 """
-Exercises: 
+Exercises:
 
-1. Create a for loop to estimate the product over all the elements in a 
+1. Create a for loop to estimate the product over all the elements in a
    matrix (10,6) except those on the 5th column.
-2. Create a while loop to estimate the number of times you have to sum a 
+2. Create a while loop to estimate the number of times you have to sum a
    number with itself until it is larger than 200, starting with 1.
 3. create a for loop for the first ten integers where you print the integer
-   as a number if it is odd, and as a string if even. 
+   as a number if it is odd, and as a string if even.
 """
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1007,7 +1000,7 @@ f(4)
 function f(x)
   if x > 0
     return x * x
-  else 
+  else
     return x + x
   end
 end
@@ -1017,9 +1010,6 @@ f(-4)
 
 # `dot` syntax for a function (vectorizing it). I do not recommend it.
 f.(-3:3)
-
-## scope = you cannot change variables, but can change arrays 
-# in place (`!` functions)
 
 # z will not be defined in the outer scope
 function f(x)
@@ -1067,7 +1057,7 @@ fgood(x,k) = x+k
 @time fbad(10)
 @time fgood(10, 10)
 
-# the first time is not representative of the speed
+# the second time runs fully compiled function
 @time fbad(10)
 @time fgood(10, 10)
 
@@ -1078,8 +1068,8 @@ fgood(x,k) = x+k
 # BenchmarkTools Package makes this easy
 using BenchmarkTools
 
-# benchmark repeats the evaluation 10_000 times by default and
-# returns statistics
+# benchmark repeats the evaluation 10_000 times by default (beware
+# time consuming evaluations) and returns time statistics
 @benchmark fbad(10)
 @benchmark fgood(10, 10)
 
@@ -1089,9 +1079,10 @@ f(x) = sum(x)
 @benchmark f($[1,2,3,4,5])
 #######
 
+
 ## anonymous functions
 # the syntax is: `input` -> `return`
-x -> x + 10 
+x -> x + 10
 
 # can be used on several functions, such as
 # map function
@@ -1129,18 +1120,14 @@ methods(mean)
 divide(n::Int64, d::Int64) = div(n,d)
 divide(n::Float64, d::Float64) = n/d
 
-# the macro @code_warntype let's us check for type instability
-@code_warntype divide(1,0)
-@code_warntype divide(1.0,0.0)
 
-
-## parametric multiple dispatch 
+## parametric multiple dispatch
 # set the same type for arguments
 function sum_same_type(x::T, y::T) where {T}
   x + y
 end
 
-# it works if arguments have the same type 
+# it works if arguments have the same type
 sum_same_type(1,1)
 sum_same_type(1.0,1.0)
 
@@ -1154,13 +1141,13 @@ function sum_number(x::T, y::T) where {T<:Number}
   x + y
 end
 
-# numeric types of the same type work 
+# numeric types of the same type work
 sum_number(1, 1)
 
 # but no method for Strings
 sum_number("1", "1")
 
-# let's create a method for strings (this is a bit of inefficient 
+# let's create a method for strings (this is a bit of inefficient
 # meta-programming)
 function sum_number(x::String, y::String)
   eval(parse(*(x, "+", y)))
@@ -1170,6 +1157,7 @@ end
 sum_number("1", "1")
 
 # one can also have methods for different array dimensions
+# (notice the preallocation within the function)
 function elem_prod(x::Array{Float64,N}, y::Array{Float64,N}) where {N}
   s = Array{Float64,N}(size(x))
   for i in eachindex(x)
@@ -1188,7 +1176,7 @@ elem_prod([1.0 2.0 3.0], [1.0 2.0 3.0])
 elem_prod([1.0,2.0,3.0], [1.0 2.0 3.0])
 
 
-# we can also combine both parametric methods 
+# we can also combine both parametric methods
 # this is powerful, it is flexible yet it allows
 # the compiler to know the result type and dimension
 function elem_sum(x::Array{T,N}, y::Array{T,N}) where {T<:Number, N}
@@ -1205,19 +1193,16 @@ elem_sum([1,2,3],[1,2,3])
 # for matrices
 elem_sum(rand(10,10),rand(10,10))
 
-# check type stability
-@code_warntype elem_sum(rand(10,10),rand(10,10))
-
-# multiple dispatch with values (useful some times)
-function fval(x::Int64, ::Type{Val{1}}) 
+# multiple dispatch with values
+function fval(x::Int64, ::Type{Val{1}})
   (x + 10)/2
 end
 
-function fval(x::Int64, ::Type{Val{2}}) 
+function fval(x::Int64, ::Type{Val{2}})
   (x + 10)^2
 end
 
-# to evaluate, you need Val again
+# to evaluate, you need `Val{}` again
 fval(5, Val{1})
 fval(5, Val{2})
 
@@ -1232,30 +1217,32 @@ prodsum(1,2,3)
 # this does not work
 prodsum(1, z = 3, y = 2)
 
+# Keyword arguments are optional arguments and are matched by name
 # we can use keywords
 function prodsum(x; y = 1, z = 2)
   x + y*z
 end
 
-
-
-# Keyword arguments are optional arguments and are matched by name
-
+prodsum(2)
+prodsum(2, y = 3)
+prodsum(2, y = 3, z = 5)
 
 
 """
-Exercises: 
+Exercises:
 
-1. Create a function that returns the number of times you have called it.
-2. Use the `map()` function to find the indexes of the elements that match
-   10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. 
-3. Create a `bang` (i.e., `!`) function that succesfully changes an array in
+1. Create a function that always returns the number of times you have
+   called it.
+2. Use the `find()` function to find the indexes of the elements that match
+   10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. (tip: find can use
+   anonymous functions as `map()`)
+3. Create a `bang` (i.e., `!`) function that successfully changes an array in
    place.
 4. Create a function where you sum over all elements of a matrix with
-   a nested loop. Determine which is more efficient: looping over the 
-   columns in the outer loop or over the rows. Why?
-5. Create a type stable function that takes a numeric vector and returns the 
-   cumulative sums. Then compare the performance with Base's `cumsum()`.
+   a nested loop. Determine which is more efficient: looping over the
+   columns in the outer loop or over the rows. Why is there a difference?
+5. Create a type stable function that takes a numeric vector and returns the
+   cumulative sums vector. Then compare the performance with Base's `cumsum()`.
 """
 
 
