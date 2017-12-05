@@ -36,7 +36,6 @@ To use the REPL (Read Evaluate Print Loop)
 apropos("product")
 
 
-
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ## Variables
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -131,7 +130,7 @@ typemin(Int64)
 typemax(Int64)
 
 # overflow wraps
-x  = typemax(Int64)
+x = typemax(Int64)
 x += 1
 
 # x is now the minimum
@@ -186,7 +185,10 @@ one(Float64)
 # Strings are made of characters, `Char`
 # Characters are delimited by single quotes
 'X'
+typeof(ans)
+
 'λ'
+typeof(ans)
 
 # Strings are delimited by double quotes (or triple double quotes)
 "Hi"
@@ -218,6 +220,7 @@ s[6]
 
 #BEWARE!
 2.0 - 3.2 == -1.2
+@show 2.0 - 3.2
 
 # product
 3 * 2
@@ -244,7 +247,6 @@ x = 5
 3x + 4(x-5)
 (3x)x
 
-
 # comparisons
 1 + 1 == 2
 1 + 1 > 4
@@ -255,7 +257,6 @@ x = 5
 isequal(2.0, 2.0)
 isinf(Inf)
 isnan(NaN)
-
 
 # updates
 x = 1
@@ -315,7 +316,8 @@ x = 2; x ^= 4
 # Integrating with shell, R and Python
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-
+# install any package with Pkg.add("PackageName")
+using RCall
 
 """
 Use R demonstration
