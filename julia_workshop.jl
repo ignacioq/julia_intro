@@ -44,9 +44,12 @@ apropos("product")
 a = 1
 a
 
-# unicode names are allowed (type as in latex, preceded with `\`, then hit tab)
+# unicode names are allowed 
+# (type as in latex, preceded with `\`, then hit tab)
 λ = 2.0
 λ
+σ² = 1.2
+σ²
 
 # some variable are already defined
 π
@@ -230,6 +233,7 @@ s[6]
 #power
 2.3^4
 
+
 #remainder
 20%3
 
@@ -311,23 +315,71 @@ div(2,1)
 x = 2; x ^= 4
 
 
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ Integrating with shell, R and Python
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Integrating with shell, R and Python
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+## Shell integration
+# use shell within Julia by just typing `;`
+
+# shell commands are denoted with backticks
+shcom = `echo hello`
+typeof(shcom)
+
+# use run to evaluate
+run(shcom)
 
 # install any package with Pkg.add("PackageName")
+
+## Integrating with R
+# load package
 using RCall
 
-"""
-Use R demonstration
+# go to R by typing `$` (backspace to return to Julia)
 
-"""
+# get a variable defined in R
+R"x = 2+4"
+@rget x
+
+# put a variable defined in Julia into R 
+t = 10
+@rput t 
+R"t"
+
+# can also check that it is in R by using `$`
+
+# reval evaluates R code 
+reval("""
+      s   <- array(NA, dim=c(10,5))
+      s[] <- 1:50 
+      s = s*4
+      """)
+# get s
+@rget s
+
+# you can plot as well
+R"plot(runif(10), runif(10), bty = 'n')"
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Vectors and Arrays
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Similarly with Python
+using PyCall
+@pyimport numpy.random as nr
+nr.rand(3,4)
+
+#= 
+Check the packages documentation for more information
+RCall:  http://juliainterop.github.io/RCall.jl/stable/
+PyCall: https://github.com/JuliaPy/PyCall.jl
+=#
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Vectors and Arrays
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 ## vectors are delimited by using square brackets `[` and  `]`
 x = [2, 3, 5]
@@ -726,6 +778,9 @@ rand(0:1)
 S = [4,7,7]
 rand(S)
 
+# you can create a random string with
+randstring(10)
+
 # check that it is uniform pick (1/3 for 7)
 x = [rand(S) for i in 1:10_000]
 mean(isodd, x)
@@ -1079,6 +1134,18 @@ using BenchmarkTools
 f(x) = sum(x)
 @benchmark f([1,2,3,4,5])
 @benchmark f($[1,2,3,4,5])
+
+"""
+Exercises:
+
+1. Benchmark the creation of a vector using these alternatives:
+   i.   `zeros(100)` 
+   ii.  `fill(2.5, 100)` 
+   iii. `Array{Float64,1}(100)`
+2. Is it faster to use `Array{Float64,1}(100)` and then fill the vector with 
+   zeros instead of using `zeros()`? (tip: use `begin` evaluation `end` to 
+   benchmark several lines) 
+"""
 #######
 
 
@@ -1088,9 +1155,10 @@ x -> x + 10
 
 # can be used on several functions, such as
 # map function
-map(cos, 0:π/4:2π)
-
 map(x -> x + 10, 0:π/4:2π)
+
+# you can use any predefined function
+map(cos, 0:π/4:2π)
 
 # for more than one argument, use a tuple
 map((x,y) -> x + y, [1:10...], [2:11...])
@@ -1229,6 +1297,23 @@ prodsum(2)
 prodsum(2, y = 3)
 prodsum(2, y = 3, z = 5)
 
+# Don't go crazy with keyword arguments because there is a slight 
+# overhead when matching.
+
+
+# multiple return values (easy! and no overhead)
+function sum_prod{N}(x::Array{Float64,N})
+  return sum(x), prod(x)
+end
+
+# it is now tuple
+sum_prod(rand(10))
+
+# you can assign by order
+sum_x, prod_x = sum_prod(rand(10))
+@show sum_x
+@show prod_x
+
 
 """
 Exercises:
@@ -1252,32 +1337,251 @@ Exercises:
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Statistical tools
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Pkg.add("Distributions")
+
+# Check out JuliaStats, a large group of packages for 
+# Statistics
+# http://juliastats.github.io
+
+
+#Pkg.add("Distributions")
+using Distributions
+
+
+# Define a Norma with mean 3.0 and standard deviation 1.5
+gauss = Normal(3.0, 1.5)
+
+# `fieldnames()` gives the appropriate parameters
+fieldnames(gauss)
+
+# 10 random samples
+rand(gauss,10)
+
+# define a Binomial with 5 trials and p = 0.2
+binom = Binomial(5, 0.2)
+
+# random variable
+rand(binom, 10)
+
+# there are many other univariate distributions:
+# https://juliastats.github.io/Distributions.jl/latest/univariate.html
+
+# get quantiles 
+quantile(gauss, [0.025, 0.5, 0.975])
+
+# fast fitting of a distribution, which creates a new
+# distribution Type (using MLE by default)
+gfit = fit(Normal, rand(gauss, 10))
+
+## Statistics evaluation
+mean(gfit)
+var(gfit)
+quantile(gfit, [0.1, 0.9])
+mode(gfit)
+entropy(gfit)
+minimum(gfit)
+# there other descriptive statistics
+
+"""
+Exercise:
+
+1. Draw 10 samples from a Poisson with mean of 3.5. Fit these draws using
+   to a Poisson and return the mean and 95% quantiles.
+"""
+
+## Probability evaluation
+
+# probability density function (pdf)
+lik = pdf(gfit, [2.0,3.4,1.3])
+
+# log pdf
+loglik = logpdf(gfit, [2.0,3.4,1.3])
+
+# total log likelihood
+loglikelihood(gfit,[2.0,3.4,1.3])
+
+# cumulative density function
+cdf(gfit, 3.)
+
+# you can truncate any distribution
+tcau = Truncated(Cauchy(), 0.0, Inf)
+
+# check that it is truncated
+cdf(tcau, 0.0)
+cdf(Cauchy(), 0.0)
+
+## Multivariate Distributions
+mvmean = [1.0,2.0,1.5]
+Σ      = [1.0 0.2 0.9;
+          0.2 1.0 0.5;
+          0.9 0.5 1.0]
+
+mvn  = MvNormal(mvmean,Σ)
+
+# most functions for univariate distributions 
+# work for multivariate distributions
+logpdf(mvn, [1.1,2.1,1.1])
+rand(mvn,10)
+
+# additional functions such as
+# Mahalanobis distance 
+sqmahal(mvn, [.1,2.1,1.1])
+
+
+# You can also construct Mixture-Models
+
+mixd = MixtureModel(Normal,                               # if all are normals
+                   [(-2.0, 1.2), (0.0, 1.0), (3.0, 2.5)], # parameters
+                   [0.2, 0.5, 0.3])                       # prior probabilities
+mean(mixd)
+var(mixd)
+logpdf(mixd, 0.1)
+
+"""
+Exercise:
+
+1. Create a matrix of Floats with dimensions (3,10) and estimate 
+   the MultivariateNormal that best describes this data.
+"""
+
+## DataFrames are similar to data.frames in R
+# Pkg.add("DataFrames")
+using DataFrames
+
+## initialization
+df = DataFrame(A=1:5, B=rand(5), C=randstring.([5,5,5,6,7]))
+typeof(ans)
+
+# columns types 
+eltypes(df)
+
+# summary stats
+describe(df)
+
+# column names 
+names(df)
+
+# by Type
+df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C3], 10)
+
+# head and tail
+df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C3], 100)
+head(df)
+tail(df)
+
+# comprehensions
+df = DataFrame([randn(10) for i in 1:5])
+
+# array conversion
+df = DataFrame(rand(20,5))
+
+## indexing is similar than in arrays
+# columns
+df[:,1]
+
+# but also 
+df[2]      # by number
+df[:x2]    # by name
+
+# rows
+df[1,:]
+
+# sort rows in place
+sort!(df, cols = :x2)
+
+# sort rows according to more than one column
+# here first by column 1 in reverse sort, then column 3 in normal sort 
+sort!(df, cols = (:1,:3), rev = (true,false))
+
+# delete a row
+deleterows!(df, 3:4)
+
+# unique rows (also accepts in place `unique!`)
+unique(df)
+
+# DataFrame allows missing values, but first you must
+# allow the column to accept them
+allowmissing!(df, 1)
+df[1:2,1] = [0.1, missing]
+
+
+"""
+Exercise:
+
+1. Create a DataFrame with four columns of type String, Float64, 
+   Int64, and Int64, respectively, and 15 rows, allow both Int 
+   Columns to accept missing values and assign a few.
+2. Order the above DataFrame by the first column (String).
+"""
 
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Integrating with other languages
+# I/O
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
+## CSV works great with DataFrames
+# Pkg.add("CSV")
+using CSV
+
+# load the Iris Data Set (# change to specific directory)
+iris = CSV.read(homedir()*"/repos/julia_intro/iris.csv")
+
+describe(iris)
+size(iris)
+names(iris)
+
+# modify iris and write to file 
+setosa = iris[iris[:Species] .== "setosa",:]
+
+CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
+
+
+## Basic
+
+
+
+
+## Using JLD (Julia Native Format, faster)
+# Pkg.add("JLD")
+using JLD
+
+# define some variables
+x = 3.5
+t = randn(2,10)
+
+# the syntax of save is `file`, `save var with name`, `var`, ...
+save(homedir()*"/repos/julia_intro/work.jld", "var1", x, "var2", t)
+
+# clean workspace (it also removes loaded packages)
+workspace()
+
+using JLD
+
+# load variables (as dictionary)
+d = load(homedir()*"/repos/julia_intro/work.jld")
+
+# load one of the variables
+x = load(homedir()*"/repos/julia_intro/work.jld", "var1")
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Parallel computing
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+# Parallel computing is made easy
+
+
+
 
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Meta Programming
+# Plots
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# A bit of Meta Programming
 #-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
 
 
-# Integrating
-# type `;` to switch to shell
-
-## Integrating with R
-
-# PyCall
-
-## Performance tips and parallel computing
