@@ -1,21 +1,22 @@
-# Introduction to Julia
-# YCRC Workshop, Yale University
-#
-# Ignacio Quintero Mächler
-#
-# 07/12/2017
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+Introduction to Julia
+YCRC Workshop, Yale University
+
+Ignacio Quintero Mächler
+
+07/12/2017
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
 
 """
 Some Documentation:
 i.   the official: https://docs.julialang.org/en/stable/
 ii.  wiki books: https://en.wikibooks.org/wiki/Introducing_Julia
 iii. stack overflow...
-
-For performance this book:
-  Julia High Performance by Avik Sengupta,
-available through the Yale library,
-...but some of it is out of date.
+iv. For performance this book:
+    Julia High Performance by Avik Sengupta,
+    available through the Yale library, ...but some of it is out of date.
 
 To use the REPL (Read Evaluate Print Loop)
 
@@ -25,20 +26,30 @@ To use the REPL (Read Evaluate Print Loop)
 
 # This is a comment
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Access documentation
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+  This
+  is
+  a 
+  comment
+  block
+=#
 
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Access documentation
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 # type `?` followed by the command
 
 # use `apropos()` to search the documentation for function
 apropos("product")
 
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ## Variables
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 # assign `a`
 a = 1
@@ -75,9 +86,11 @@ else = 2
 end  = "Hi"
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-## Basic Types
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Basic Types
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 # Types are organized in hierarchically
 """
@@ -207,10 +220,11 @@ s[1]
 s[6]
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-## Basic math
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Basic math
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 ## basic math functions +, -, *, /, ^, %
 
@@ -754,9 +768,11 @@ Exercises:
 """
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Basic statistical and linear algebra utilities
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Basic statistical and linear algebra utilities
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 # draw from the uniform distribution U(0,1)
 rand()
@@ -771,7 +787,7 @@ rand(100)
 # make an array with random uniform numbers
 rand(10,10)
 
-# Bernoulli trials
+# Bernoulli trials with p = 0.5
 rand(0:1)
 
 # `rand(S)` uniformly picks a value from the collection S
@@ -889,10 +905,11 @@ Exercise:
 """
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Control Flow
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Control Flow
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 ## if conditional
 x = 5
@@ -1035,13 +1052,15 @@ Exercises:
    matrix (10,6) except those on the 5th column.
 2. Create a while loop to estimate the number of times you have to sum a
    number with itself until it is larger than 200, starting with 1.
-3. create a for loop for the first ten integers where you print the integer
+3. Create a for loop for the first ten integers where you print the integer
    as a number if it is odd, and as a string if even.
 """
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Functions & multiple dispatch
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
 # basic construction
 function f(x)
@@ -1107,8 +1126,8 @@ fgood(10, 10)
 
 #######
 # Parenthesis: Evaluating Performance
-fbad(x)    = x+k
-fgood(x,k) = x+k
+fbad(x)    = x + k
+fgood(x,k) = x + k
 
 # the first time is not representative of the speed
 @time fbad(10)
@@ -1297,11 +1316,12 @@ prodsum(2)
 prodsum(2, y = 3)
 prodsum(2, y = 3, z = 5)
 
-# Don't go crazy with keyword arguments because there is a slight 
-# overhead when matching.
+#=
+Don't go crazy with keyword arguments because there is a slight 
+overhead when matching.
+=#
 
-
-# multiple return values (easy! and no overhead)
+# multiple return values (easy! and no almost no overhead)
 function sum_prod{N}(x::Array{Float64,N})
   return sum(x), prod(x)
 end
@@ -1318,34 +1338,38 @@ sum_x, prod_x = sum_prod(rand(10))
 """
 Exercises:
 
-1. Create a function that always returns the number of times you have
+1. Create a simple function for Bernoulli trials with an input `p` 
+   for the probability of success.
+2. Create a function that always returns the number of times you have
    called it.
-2. Use the `find()` function to find the indexes of the elements that match
+3. Use the `find()` function to find the indexes of the elements that match
    10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. (tip: find can use
    anonymous functions as `map()`)
-3. Create a `bang` (i.e., `!`) function that successfully changes an array in
+4. Create a `bang` (i.e., `!`) function that successfully changes an array in
    place.
-4. Create a function where you sum over all elements of a matrix with
+5. Create a function where you sum over all elements of a matrix with
    a nested loop. Determine which is more efficient: looping over the
    columns in the outer loop or over the rows. Why is there a difference?
-5. Create a type stable function that takes a numeric vector and returns the
+6. Create a type stable function that takes a numeric vector and returns the
    cumulative sums vector. Then compare the performance with Base's `cumsum()`.
 """
 
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Statistical tools
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Statistical tools and DataFrames
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
-# Check out JuliaStats, a large group of packages for 
-# Statistics
-# http://juliastats.github.io
+#=
+Check out JuliaStats, a large group of packages for 
+Statistics
+http://juliastats.github.io
+=#
 
-
-#Pkg.add("Distributions")
+## Pkg.add("Distributions")
 using Distributions
-
 
 # Define a Norma with mean 3.0 and standard deviation 1.5
 gauss = Normal(3.0, 1.5)
@@ -1428,7 +1452,6 @@ sqmahal(mvn, [.1,2.1,1.1])
 
 
 # You can also construct Mixture-Models
-
 mixd = MixtureModel(Normal,                               # if all are normals
                    [(-2.0, 1.2), (0.0, 1.0), (3.0, 2.5)], # parameters
                    [0.2, 0.5, 0.3])                       # prior probabilities
@@ -1436,11 +1459,12 @@ mean(mixd)
 var(mixd)
 logpdf(mixd, 0.1)
 
+
 """
 Exercise:
 
 1. Create a matrix of Floats with dimensions (3,10) and estimate 
-   the MultivariateNormal that best describes this data.
+   the Multivariate Normal that best describes this data.
 """
 
 ## DataFrames are similar to data.frames in R
@@ -1483,7 +1507,7 @@ df[2]      # by number
 df[:x2]    # by name
 
 # rows
-df[1,:]
+df[4,:]
 
 # sort rows in place
 sort!(df, cols = :x2)
@@ -1514,9 +1538,37 @@ Exercise:
 """
 
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# I/O
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+I/O
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+## Basic (less streamlined)
+# open a connection to the file
+f = open(homedir()*"/repos/julia_intro/iris.csv")
+
+# read all lines
+lines = readlines(f)
+
+#=
+you can then loop through the lines using something like
+for line in lines
+  `do something`
+end
+=#
+
+# you should close the connection
+close()
+
+
+# readdlm is a basic Array reader
+readdlm(homedir()*"/repos/julia_intro/iris.csv", ',')
+
+# `writedlm(file, array)` writes Arrays to a file.
+
+# readcvs and writecvs already understand that the delimitation is `,`
+readcsv(homedir()*"/repos/julia_intro/iris.csv")
 
 
 ## CSV works great with DataFrames
@@ -1534,11 +1586,6 @@ names(iris)
 setosa = iris[iris[:Species] .== "setosa",:]
 
 CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
-
-
-## Basic
-
-
 
 
 ## Using JLD (Julia Native Format, faster)
@@ -1563,24 +1610,150 @@ d = load(homedir()*"/repos/julia_intro/work.jld")
 # load one of the variables
 x = load(homedir()*"/repos/julia_intro/work.jld", "var1")
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Parallel computing
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-# Parallel computing is made easy
+"""
+Exercise:
 
-
-
-
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Plots
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+1. Read the iris data into a DataFrame pointing to the right file path. Then
+   make sure all the columns have appropriate types. 
+"""
 
 
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Basic Parallel computing
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
 
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# A bit of Meta Programming
-#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# open julia with `-p <ncores>` parameter
+
+# how many workers?
+workers()
+
+# add and remove workers 
+addprocs(1)
+rmprocs(4)
+
+# the `everywhere` macro ensure code is available in all processes
+@everywhere using Distributions
+
+# the parallel macro and shared arrays
+r = SharedArray{Float64}(1_000)
+@parallel for i in 1:1_000
+  r[i] = mean(fit(Normal, randn(1_000)))
+end
+
+# post loop aggregation
+n1 = @parallel (+) for i in 1:10_000
+  rand(0:1)
+end
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Very Basic Plotting
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+# Plotting is only available through external libraries
+
+## Plots.jl
+# Plots is a metapackage with different backends, for 
+# full documentation check http://docs.juliaplots.org/latest/
+using Plots
+
+# you can specify the back end (defaults to what you have installed)
+gr()
+
+x = randn(10)
+y = randn(10)
+sp = scatter((x, y))
+
+# plot two different series
+lp = plot(cumsum(randn(100,2)), linewidth = 2)
+
+# plot a histogram
+hp = histogram(randn(1_000), ylabel = "frequency", nbins = 20)
+
+# 2D histogram
+h2 = histogram2d(randn(10_000),randn(10_000),nbins=20)
+
+# plot all of them
+plot(sp,lp,hp, h2, layout = (2,2))
+
+
+# parametric plot
+# plot(function, start, end)
+plot((x -> x^2), 0, 2, linewidth = 4)
+
+# add a scatter plot
+y = [0.1:0.1:2...].^2 .* randexp(20)
+scatter!(0.1:0.1:2, y, color = :orange)
+
+# add titles and axis labels: use
+# title!, xaxis!, yaxis!, xlabel!, ylabel!, xlims!
+title!("This is such a contrived example")
+xaxis!("x")
+yaxis!("growth")
+
+# add a 1:1 line
+plot!((x -> x),0,2, linewidth = 2)
+
+
+#=
+Other options are
+
+## Gadfly.jl
+# Gadfly interface is similar to ggplot2 in R
+
+## PyPlot.jl
+# PyPlot using Python's matplotlib without overhead
+=#
+
+"""
+Exercise:
+
+1. Plot a scatter plot of 20 data points, y = 1 + 0.3x + ϵ, where 
+   ϵ ~ Normal(0,0.2).
+2. Add the line of the model used to produce this data.
+"""
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+A tiny bit of Meta Programming
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+# All code in Julia is represented as Julia code structures itself
+
+# Expr are code objects that are not evaluated
+x = :(2.0 + 2.0)
+typeof(ans)
+
+# `eval()` allows to evaluate Expr
+eval(x)
+
+# there is a hierarchical tree of evaluation
+x = :(2 + 2*3)
+
+# the filed `args` allows us to access the hierarchy of evaluation
+x.args
+
+# we can change any element from this evaluation
+# say, change the sum for a multiplication
+x.args[1] = :*
+
+# now the Expr uses product
+eval(x)
+
+# parse returns an Expr object from a string
+x  = "1 + 2^3"
+px = parse(x)
+eval(px)
+
+
+
 
 
 
