@@ -60,11 +60,11 @@ a
 λ = 2.0
 λ
 σ² = 1.2
-σ²
+
 
 # some variable are already defined
-π
 pi
+π == pi
 e
 
 # we can redefine them, but it will give a Warining
@@ -122,7 +122,6 @@ typeof(false)
 supertype(Bool)
 
 ## Integer
-
 # get the subtypes of integer
 subtypes(Integer)
 subtypes(Signed)
@@ -164,7 +163,7 @@ typeof(ans)
 whos()
 
 # you can use underscores to separate integers
-1_000_447
+1_000_447 == 1000447
 
 
 ## Float
@@ -348,7 +347,7 @@ run(shcom)
 # install any package with Pkg.add("PackageName")
 
 ## Integrating with R
-# load package
+# load package (you need R installed)
 using RCall
 
 # go to R by typing `$` (backspace to return to Julia)
@@ -370,6 +369,7 @@ reval("""
       s[] <- 1:50 
       s = s*4
       """)
+
 # get s
 @rget s
 
@@ -377,7 +377,7 @@ reval("""
 R"plot(runif(10), runif(10), bty = 'n')"
 
 
-# Similarly with Python
+# Similarly with Python (you need Python installed)
 using PyCall
 @pyimport numpy.random as nr
 nr.rand(3,4)
@@ -477,7 +477,7 @@ sr = 1.0:0.1:2.0
 v = collect(sr)
 
 # this can also be achieved with
-[sr...] == collect(sr)
+[sr...] == v
 
 
 ## Comprehensions
@@ -488,7 +488,7 @@ v = [i^2 for i in 1:10]
 v = [i^2 for i in 1:10 if i != 4]
 
 # a fast vector creation
-v = Vector{Int64}(100)
+v = Vector{Int64}(20)
 
 # create an empty vector
 v = Int64[]
@@ -590,7 +590,7 @@ Vector{Any} == Array{Any,1}
 
 [1 2 3]
 
-# create along dimensions
+# create along second dimensions
 [1 2 3; 4 5 6]
 
 # Matrix is an alias for a two dimensional Array
@@ -610,7 +610,7 @@ ndims(A)
 size(A)
 length(A)
 
-# fast construction
+# fast construction (again)
 A = Array{Float64}(5,5,3)
 
 # create identity matrix
@@ -663,7 +663,7 @@ A === B
 # `similar()` copies the dimensions but not the values
 A[:] = 1:9
 B = similar(A)
-A[2] = 100
+B[2] = 100
 A === B
 A
 
@@ -673,7 +673,7 @@ B[2] = 100
 A === B
 A
 
-# `deepcopy()` makes a fully independent object (more on this later)
+# `deepcopy()` makes a fully independent object (important for structures)
 B = deepcopy(A)
 B[2] = 100
 A === B
@@ -710,7 +710,7 @@ d[[0,1,0]]
 # Create a Dictionary using comprehensions
 d = Dict("r$i" => randn() for i =1:10)
 
-# get returns another value if the key is not found
+# get allows you to returns another value if the key is not found
 get(d, "r1", NaN)
 get(d, "hi", NaN)
 
@@ -725,6 +725,7 @@ typeof(ans)
 t = (1,2,4)
 typeof(t)
 
+# you cannot modify them
 t[1] = 2
 
 # convert a tuple into an array
@@ -779,10 +780,10 @@ rand()
 
 # `srand()` sets random seed number
 srand(123)
-rand(100)
+rand(10)
 
 srand(123)
-rand(100)
+rand(10)
 
 # make an array with random uniform numbers
 rand(10,10)
@@ -868,7 +869,7 @@ inv(A)
 # matrix determinant
 det(A)
 
-# rotate matrix
+# reshape matrix dimensions
 A = reshape([1:9...],3,3)
 
 # rotate 180 degrees
@@ -947,10 +948,10 @@ x > 10 && y < 10
 # one can link comparisons
 x > y < 10 < 11
 
-# `&&` is as a concise `if` statement
+# `&&` can be used as a concise `if` statement
 x > y && println("$x is greater than $y")
 
-# similarly, using `||`
+# similarly, for `if not` use `||`
 x < y || println("x is not greater than y")
 
 
@@ -1010,7 +1011,7 @@ sum(A) == s
 
 ## common iterators
 # iterate for the length of a vector
-v = [1,5,2]
+v = ["a","b","c"]
 for i = eachindex(v)
   println(i)
 end
@@ -1029,8 +1030,8 @@ for k in keys(d)
 end
 
 # iterate over dictionary values
-for k in values(d)
-  println(k+1)
+for val in values(d)
+  println(val)
 end
 
 # iterating over dictionary return tuple of (key, value)
@@ -1039,6 +1040,7 @@ for (k,v) in d
 end
 
 # iterating over Matrices
+A = zeros(5,3)
 for j in indices(A,2), i in indices(A,1)
   println(i, " ", j)
 end
@@ -1100,21 +1102,23 @@ function fill_with_ones!(x)
   x[:] = 1
   nothing
 end
-x = zeros(10)
 
+x = zeros(10)
 fill_with_ones!(x)
 x
 
-# arguments are "passed-by-sharing", that is, they are referenced,
-# not copied (close to zero overhead); always better to pass multiple
-# arguments than guessing from another outer scope
+#=
+arguments are "passed-by-sharing", that is, they are referenced,
+not copied (close to zero overhead); always better to pass multiple
+arguments than matching from the outer scope.
+=#
 
 # this is BAD
+k = 10
 function fbad(x)
   x + k
 end
 
-k = 10
 fbad(10)
 
 # this is good
@@ -1174,7 +1178,7 @@ x -> x + 10
 
 # can be used on several functions, such as
 # map function
-map(x -> x + 10, 0:π/4:2π)
+map(x -> x + 10, 0:0.1:1)
 
 # you can use any predefined function
 map(cos, 0:π/4:2π)
@@ -1183,7 +1187,7 @@ map(cos, 0:π/4:2π)
 map((x,y) -> x + y, [1:10...], [2:11...])
 
 # can also be empty
-map(() -> rand(0:1))
+map(() -> rand(0:1,10))
 
 
 ### Multiple dispatch
@@ -1197,12 +1201,14 @@ fp(x::Int64, y::Int64) = x + y
 fp(1.0)
 fp(1)
 fp(1,3)
+
+# no method for Int8 though
 fp(Int8(1))
 
 # you can check the methods of a function with `methods()`
 methods(fp)
 
-# let's explore a Base function
+# let's explore the methods from a Base function
 methods(mean)
 
 # this is great for "Type Stability"
@@ -1220,7 +1226,7 @@ end
 sum_same_type(1,1)
 sum_same_type(1.0,1.0)
 
-# but not if they are of different types
+# but throws an error not if they are of different types
 sum_same_type(1.0,1)
 
 # we might want to restrict the type to be numeric since...
@@ -1258,7 +1264,7 @@ end
 # this works
 elem_prod([1.0,2.0,3.0], [1.0,2.0,3.0])
 
-# and this
+# and this (note that these are Matrices)
 elem_prod([1.0 2.0 3.0], [1.0 2.0 3.0])
 
 # but this don't
@@ -1266,7 +1272,7 @@ elem_prod([1.0,2.0,3.0], [1.0 2.0 3.0])
 
 
 # we can also combine both parametric methods
-# this is powerful, it is flexible yet it allows
+# this is powerful: it is flexible yet it allows
 # the compiler to know the result type and dimension
 function elem_sum(x::Array{T,N}, y::Array{T,N}) where {T<:Number, N}
   s = Array{T,N}(size(x))
@@ -1355,7 +1361,6 @@ Exercises:
 """
 
 
-
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Statistical tools and DataFrames
@@ -1390,7 +1395,7 @@ rand(binom, 10)
 # https://juliastats.github.io/Distributions.jl/latest/univariate.html
 
 # get quantiles 
-quantile(gauss, [0.025, 0.5, 0.975])
+quantile.(gauss, [0.025, 0.5, 0.975])
 
 # fast fitting of a distribution, which creates a new
 # distribution Type (using MLE by default)
@@ -1403,7 +1408,7 @@ quantile(gfit, [0.1, 0.9])
 mode(gfit)
 entropy(gfit)
 minimum(gfit)
-# there other descriptive statistics
+# there other descriptive statistics...
 
 """
 Exercise:
@@ -1484,7 +1489,7 @@ describe(df)
 # column names 
 names(df)
 
-# by Type
+# by Type (note how DataFrames allow for `NA`)
 df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C3], 10)
 
 # head and tail
@@ -1522,11 +1527,6 @@ deleterows!(df, 3:4)
 # unique rows (also accepts in place `unique!`)
 unique(df)
 
-# DataFrame allows missing values, but first you must
-# allow the column to accept them
-allowmissing!(df, 1)
-df[1:2,1] = [0.1, missing]
-
 
 """
 Exercise:
@@ -1546,10 +1546,10 @@ I/O
 
 ## Basic (less streamlined)
 # open a connection to the file
-f = open(homedir()*"/repos/julia_intro/iris.csv")
+file = open(homedir()*"/repos/julia_intro/iris.csv")
 
 # read all lines
-lines = readlines(f)
+lines = readlines(file)
 
 #=
 you can then loop through the lines using something like
@@ -1559,7 +1559,7 @@ end
 =#
 
 # you should close the connection
-close()
+close(file)
 
 
 # readdlm is a basic Array reader
@@ -1583,7 +1583,8 @@ size(iris)
 names(iris)
 
 # modify iris and write to file 
-setosa = iris[iris[:Species] .== "setosa",:]
+setosa = iris[find(iris[:Species] .== "setosa"),:]
+
 
 CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
 
@@ -1631,8 +1632,15 @@ Basic Parallel computing
 workers()
 
 # add and remove workers 
-addprocs(1)
+addprocs(2)
+
+# check
+workers()
+
 rmprocs(4)
+
+# check
+workers()
 
 # the `everywhere` macro ensure code is available in all processes
 @everywhere using Distributions

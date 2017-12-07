@@ -10,10 +10,10 @@ Basic introduction to Julia
 4. Restart Sublime Text.
 5. Open the Package Manager by typing `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows).
 6. Type `Install Package`, press enter on `Package Control: Install Package`.
-7. Type `SendCode` and press enter when on the package name (If you don't see the Package's name is because you already installed it).
+7. Type `SendCode` and press enter when on the package name (if you don't see the Package's name is because you already installed it).
 8. Repeat step 5, and but now type `Julia` and press enter.
-11. Open the Julia REPL in a terminal window (or tmux, or the respective in Windows).
-12. Open the file `julia_workshop.jl` in Sublime Text.
+11. Open the Julia REPL in a terminal window (or tmux in Linux, or the respective in Windows).
+12. Download the file `https://github.com/ignacioq/julia_intro/julia_workshop.jl` from , and open it in Sublime Text.
 13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to
 (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively).
 
@@ -23,9 +23,11 @@ You should be able to send code from Sublime into Julia by pressing `Cmd + Enter
 ### Useful packages
 
 Please install the following packages by typing the following in the Julia prompt:
-`Pkg.add("BenchmarkTools")`
-`Pkg.add("Distributions")`
-`Pkg.add("DataFrame")`
-`Pkg.add("RCall")`
-`Pkg.add("Plots")`
-`Pkg.add("GR")`
+```
+Pkg.add("BenchmarkTools")
+Pkg.add("Distributions")
+Pkg.add("DataFrame")
+Pkg.add("RCall")
+Pkg.add("Plots")
+Pkg.add("GR")
+```
