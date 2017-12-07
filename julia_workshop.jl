@@ -1544,6 +1544,10 @@ I/O
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 =#
 
+"""
+Please download the iris.csv dataset from https://github.com/ignacioq/julia_intro
+"""
+
 ## Basic (less streamlined)
 # open a connection to the file
 file = open(homedir()*"/repos/julia_intro/iris.csv")
