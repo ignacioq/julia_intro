@@ -11,7 +11,7 @@ Basic introduction to Julia
 5. Open the Package Manager by typing `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows).
 6. Type `Install Package`, press enter on `Package Control: Install Package`.
 7. Type `SendCode` and press enter when on the package name (if you don't see the Package's name is because you already installed it).
-8. Repeat step 5 & 6, and but now type `Julia` and press enter.
+8. Repeat steps 5 & 6, and but now type `Julia` and press enter.
 11. Open the Julia REPL in a terminal window (or tmux in Linux, or the respective in Windows).
 12. Download this file `https://github.com/ignacioq/julia_intro/julia_workshop.jl`, and open it in Sublime Text.
 13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to
