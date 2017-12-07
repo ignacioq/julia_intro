@@ -27,7 +27,7 @@ Please install the following packages by typing the following in the Julia promp
 Pkg.add("BenchmarkTools")
 Pkg.add("Distributions")
 Pkg.add("DataFrames")
-Pkg.add("RCall")
+Pkg.add("RCall") # Requires R
 Pkg.add("Plots")
 Pkg.add("GR")
 ```
