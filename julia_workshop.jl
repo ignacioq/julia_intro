@@ -291,6 +291,7 @@ s1 = "Hello "
 s2 = "world"
 
 "s1s2"
+
 "$s1$s2"
 
 # it works with inside evaluation
@@ -364,7 +365,7 @@ R"t"
 
 # reval evaluates R code 
 reval("""
-      s   <- array(NA, dim=c(10,5))
+      s   <- array(NA_integer_, dim=c(10,5))
       s[] <- 1:50 
       s = s*4
       """)
@@ -508,7 +509,7 @@ append!(x,4:5)
 x
 
 """
-NOTE: functions ending with `!` ("bang") changes the object in place
+NOTE: functions ending with `!` ("bang") change the object in place
 """
 
 # add one or more elements to the end
@@ -619,7 +620,7 @@ A = eye(5)
 A = diagm(1:5)
 
 # repmat repeats a vector along each dimension
-# repeat in dim one (rows)
+# repeat twice in dim one (rows)
 repmat([1,2,3],2,1)
 # repeat in dim two (cols)
 repmat([1,2,3],1,2)
@@ -1373,7 +1374,7 @@ http://juliastats.github.io
 ## Pkg.add("Distributions")
 using Distributions
 
-# Define a Norma with mean 3.0 and standard deviation 1.5
+# Define a Normal with mean 3.0 and standard deviation 1.5
 gauss = Normal(3.0, 1.5)
 
 # `fieldnames()` gives the appropriate parameters
@@ -1401,7 +1402,7 @@ gfit = fit(Normal, rand(gauss, 10))
 ## Statistics evaluation
 mean(gfit)
 var(gfit)
-quantile(gfit, [0.1, 0.9])
+quantile.(gfit, [0.1, 0.9])
 mode(gfit)
 entropy(gfit)
 minimum(gfit)
