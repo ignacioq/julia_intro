@@ -4,7 +4,7 @@ Basic introduction to Julia
 
 (If you are on Windows, you need to have `Cmder` or `ConEmu` installed and be able to open the Julia REPL from there; otherwise, please use Atom and the Juno distribution following these instructions: https://github.com/JunoLab/uber-juno/blob/master/setup.md).
 
-1. Download and install Julia v0.6.1 here: https://julialang.org/downloads/
+1. Download and install Julia v0.6.2 here: https://julialang.org/downloads/
 2. Download and install Sublime Text 3 here: https://www.sublimetext.com/3.
 3. Open Sublime Text and install the Package Manager following these instructions: https://packagecontrol.io/installation.
 4. Restart Sublime Text.
