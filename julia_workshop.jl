@@ -246,7 +246,6 @@ Basic math
 #power
 2.3^4
 
-
 #remainder
 20%3
 
@@ -680,7 +679,7 @@ A === B
 A
 
 
-## Dicitionaries
+## Dictionaries
 # Dictionaries directionally associate two objects `key => value`,
 # they are not ordered
 d = Dict("a" => 1, "b" => 2, "c" => 3)
@@ -753,7 +752,6 @@ cos.(z)
 log.(z)
 
 
-
 """
 Exercises:
 
@@ -765,7 +763,7 @@ Exercises:
 4. Create a 3-dimensional array of size `(5,5,3)` where each element is the
    product of the 1d index with the 2d index elevated to the 3d index.
 5. Create a Dictionary with each integer starting with 1 associated with
-    each letter in the alphabet using comprehensions.
+   each letter in the alphabet using comprehensions.
 """
 
 
@@ -843,7 +841,6 @@ cov(x, y)
 
 # approximate comparison
 isapprox(mean(x), mean(y), atol = 0.1)
-
 
 ## Matrix Functions
 A = rand(10,10)
