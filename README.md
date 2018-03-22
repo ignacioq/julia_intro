@@ -17,10 +17,7 @@ Basic introduction to Julia
 13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to
 (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively).
 
-You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows). 
-
-(Note: No need to install Atom if these instructions work for you.)
-
+You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows).
 
 ### Useful packages
 
