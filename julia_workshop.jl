@@ -1569,7 +1569,7 @@ readdlm(homedir()*"/repos/julia_intro/iris.csv", ',')
 
 # `writedlm(file, array)` writes Arrays to a file.
 
-# readcvs and writecvs already understand that the delimitation is `,`
+# readcsv and writecsv already understand that the delimitation is `,`
 readcsv(homedir()*"/repos/julia_intro/iris.csv")
 
 
@@ -1677,7 +1677,7 @@ gr()
 
 x = randn(10)
 y = randn(10)
-sp = scatter((x, y))
+sp = scatter(x, y)
 
 # plot two different series
 lp = plot(cumsum(randn(100,2)), linewidth = 2)
