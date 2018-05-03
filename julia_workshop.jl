@@ -652,7 +652,7 @@ A[1:5]
 ## copying and pointers
 # copy by reference
 B = A
-# assing to b
+# assigning to b
 B[2] = 100
 # it is also changed in a
 A
