@@ -4,19 +4,20 @@ YCRC Workshop, Yale University
 
 Ignacio Quintero Mächler
 
-07/12/2017
+Created 07 12 2017 for Julia v0.6.x
+Updated 04 02 2019 for Julia v1.0.x
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 =#
 
 
 """
 Some Documentation:
-i.   the official: https://docs.julialang.org/en/stable/
+i.   the official: https://docs.julialang.org/en/v1/
 ii.  wiki books: https://en.wikibooks.org/wiki/Introducing_Julia
 iii. stack overflow...
 iv. For performance this book:
     Julia High Performance by Avik Sengupta,
-    available through the Yale library, ...but some of it is out of date.
+    ...but some of it is out of date.
 
 To use the REPL (Read Evaluate Print Loop)
 
@@ -65,15 +66,10 @@ a
 # some variable are already defined
 pi
 π == pi
-e
+ℯ
 
-# we can redefine them, but it will give a Warining
-π = true
-π
-
-# Oh-uh, let's change it back
+# you cannot redefine them
 π = Base.pi
-π
 
 # Do not use `.` in variable names, they represent `fields` in types
 a.1 = 2
@@ -159,8 +155,8 @@ typeof(x)
 Int16(1)
 typeof(ans)
 
-# `whos()` prints current global symbols
-whos()
+# `varinfo()` prints current global symbols
+varinfo()
 
 # you can use underscores to separate integers
 1_000_447 == 1000447
@@ -176,9 +172,12 @@ typeof(ans)
 typemin(Float64)
 typemax(Float64)
 
-# Not a Number, `NaN` is a Float64
+# Not a Number, `NaN` is a Float64 by default
 NaN
 typeof(ans)
+
+# there are also `NaN`s for Float32 and Float16
+NaN16, NaN32
 
 # scientific notation is Float64 by default
 1e4
@@ -253,7 +252,7 @@ Basic math
 sqrt(9)
 √9
 log(10)
-log(e)
+log(ℯ)
 sin(π)
 exp(2)
 
@@ -273,6 +272,10 @@ x = 5
 isequal(2.0, 2.0)
 isinf(Inf)
 isnan(NaN)
+
+# approximate comparisons
+isapprox(1.00001, 1.0, atol = 1e-5)
+isapprox(1.00001, 1.0, atol = 1e-2)
 
 # updates
 x = 1
@@ -367,7 +370,7 @@ R"t"
 reval("""
       s   <- array(NA_integer_, dim=c(10,5))
       s[] <- 1:50 
-      s = s*4
+      s   <- s*4
       """)
 
 # get s
@@ -419,12 +422,12 @@ typeof(x)
 x[1]
 x[[2,3]]
 
-# or better with UnitRange
+# or better (more efficient) with UnitRange
 x[2:3]
 typeof(2:3)
 
 # length and endof return the length
-endof(x) == length(x)
+lastindex(x) == length(x)
 
 # `end` returns the last item
 x[end]
@@ -436,6 +439,10 @@ x
 
 
 ## initialization
+
+# Boolean vector
+v = trues(10)
+
 # zeros, by default Float64
 v = zeros(10)
 
@@ -453,9 +460,6 @@ v = fill("hi", 10)
 ur = 1:10
 typeof(ur)
 
-# you can also declare UnitRanges with
-colon(1,10)
-
 # you can subset UnitRange
 ur[2]
 
@@ -470,7 +474,10 @@ v[10] = 5
 # Int
 sr = 1:2:6
 typeof(sr)
-1:2:6 == colon(1,2,6)
+
+# you can construct with `range` it estimates the 
+# steprange according to the number of objects and the step size
+1:2:6 == range(1, step=2, length=3)
 
 # also works with Floats
 sr = 1.0:0.1:2.0
@@ -487,8 +494,8 @@ v = [i^2 for i in 1:10]
 # you can add if statement to filter (conditional comprehensions)
 v = [i^2 for i in 1:10 if i != 4]
 
-# a fast vector creation
-v = Vector{Int64}(20)
+# a fast (undefined) vector creation
+v = Vector{Int64}(undef, 20)
 
 # create an empty vector
 v = Int64[]
@@ -517,7 +524,7 @@ push!(x,6)
 push!(x,7,8,9)
 
 # add one or more elements at the beggining
-unshift!(x,-1,0)
+pushfirst!(x,-1,0)
 
 # replace and insert an element at a given index (returs the replaced item)
 x = [1,3,4,5,6]
@@ -532,7 +539,7 @@ pop!(x)
 x
 
 # remove the first element (and return it)
-shift!(x)
+popfirst!(x)
 x
 
 # delete at a given index
@@ -546,35 +553,38 @@ empty!(x)
 x = [1:5...]
 fill!(x, 1)
 
-# this can also be done with base assign
+# this can also be done with base assign but
+# you need the period `.` ahead, for broadcasting, more on that later.
 x = [1:5...]
-x[1:5] = 1
+x[1:5] .= 1
 x
 
 # you can also use fill! to create vectors
-v = fill!(Array{String}(3), "hello")
+v = fill("hello", 3)
+
+# which seems to be slightly (I got 0.2 ns slower) faster than:
+v = fill!(Array{String}(undef, 3), "hello")
 
 
 """
 Exercises:
 
 1. create a vector of length 10 of type Bool.
-2. understand what `range()` and `linspace()` do.
 2. What is the required step size to have 16 equally spaced values between
    1.0 and 3.2?
-4. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up
+3. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up
    `[1,4,3,2,5]`.
-5. Checkout the `filter!()` function and use it to allow only even values
+4. Checkout the `filter!()` function and use it to allow only even values
    in `[1,2,3,6,7,3,1,10,28]`.
-6. What is the difference between `max()` and `maximum()`.
-7. Learn how to use `setdiff()` and find the length of non shared elements
+5. What is the difference between `max()` and `maximum()`.
+6. Learn how to use `setdiff()` and find the length of non shared elements
    between:
    a = [2,8,4,9]
    b = [4,2,3,5]
-8. Using `find()`, equality `==`, and vectorized functions, create a vector
+7. Using `find()`, equality `==`, and vectorized functions, create a vector
    with the indices that match 1 for the following vector:
    `[10,11,1,4,5,1,11,1,3,0,2,-1]`
-9. Search for the function that sorts in place (i.e., ends in `!`) and
+8. Search for the function that sorts in place (i.e., ends in `!`) and
    the function that returns the maximum and minimum of a vector.
 """
 
@@ -611,19 +621,13 @@ size(A)
 length(A)
 
 # fast construction (again)
-A = Array{Float64}(5,5,3)
+A = Array{Float64}(undef, 5,5,3)
 
-# create identity matrix
-A = eye(5)
-
-# create diagonal matrix
-A = diagm(1:5)
-
-# repmat repeats a vector along each dimension
+# repeat a vector along each dimension
 # repeat twice in dim one (rows)
-repmat([1,2,3],2,1)
+repeat([1,2,3],2,1)
 # repeat in dim two (cols)
-repmat([1,2,3],1,2)
+repeat([1,2,3],1,2)
 
 # 2 dimensional comprehensions
 A = [i*j for i in 1:5, j in 1:5]
@@ -673,11 +677,18 @@ B[2] = 100
 A === B
 A
 
-# `deepcopy()` makes a fully independent object (important for structures)
+# `deepcopy()` makes a fully independent object, including substructures 
+# (important for `struct`)
 B = deepcopy(A)
 B[2] = 100
 A === B
 A
+
+# for efficiency, you can copy to an already existent array
+B[1] = 100
+B
+copyto!(B, A)
+B
 
 
 ## Dictionaries
@@ -697,6 +708,8 @@ d["d"] = 4
 d
 
 # Dictionaries can accommodate almost any object
+using Random
+
 d = Dict("unif" => rand(10),
          "norm" => randn(10),
          "exp"  => randexp(10))
@@ -732,10 +745,10 @@ t[1] = 2
 a = [t...]
 
 # re convert back to tuple
-t = (a...)
+t = (a...,)
 
 
-## Vectorization
+## Vectorization (broadcasting)
 # Julia allows vectorization, as in R,
 # however, I find it less efficient and avoidable
 x = [1:10...]
@@ -757,8 +770,7 @@ log.(z)
 Exercises:
 
 1. Create an `Int64` identity matrix (10,10) without using `eye(10)`.
-2. Fill the above object such that it is now a Diagonal matrix with 1:10
-   without using `diagm()`.
+2. Fill the above object such that it is now a Diagonal matrix with 1:10.
 3. Create a Range that goes from 10 to 1 and then make a new matrix object
    with 5 rows, where each row is this range.
 4. Create a 3-dimensional array of size `(5,5,3)` where each element is the
@@ -777,11 +789,11 @@ Basic statistical and linear algebra utilities
 # draw from the uniform distribution U(0,1)
 rand()
 
-# `srand()` sets random seed number
-srand(123)
+# `Random.seed!()` sets random seed number
+Random.seed!(123)
 rand(10)
 
-srand(123)
+Random.srand(123)
 rand(10)
 
 # make an array with random uniform numbers
@@ -799,6 +811,9 @@ randstring(10)
 
 # check that it is uniform pick (1/3 for 7)
 x = [rand(S) for i in 1:10_000]
+
+using Statistics
+
 mean(isodd, x)
 
 # draw from the Normal distribution N(0,1)
@@ -820,7 +835,7 @@ randperm(10)
 v = randperm(10)
 shuffle!(v)
 
-## basic statistics
+## basic statistics in library `Statistics`
 x = randn(1_000)
 
 mean(x)
@@ -847,11 +862,11 @@ isapprox(mean(x), mean(y), atol = 0.1)
 A = rand(10,10)
 
 # scalar sum
-A + 1.0
+A .+ 1.0
 
 # scalar product
 2A
-scale!(A,2)
+rmul!(A,2)
 
 # matrix sum
 B = ones(10,10)
@@ -888,7 +903,7 @@ B/1.5
 # for instance, `axpy!(s,X,Y)` performs `s*X + Y` and overwrites in Y
 A = rand(5,5)
 B = ones(5,5)
-LinAlg.axpy!(2, A, B)
+axpy!(2, A, B)
 B
 
 
@@ -896,10 +911,10 @@ B
 Exercise:
 
 1. Estimate the standard deviation among the differences between the estimated
-   mean of 1_000 `randexp()` and 1.0, for 10_000 replicates (tip: see the
+   mean of 1_000 `Random.randexp()` and 1.0, for 10_000 replicates (tip: see the
    documentation of `mean()`).
 2. Let `A = reshape([1:9...],3,3)`, what does circshift(A, (1,1)) do? what does
-   rot180(A)? what does flipdim(A,1)?
+   rot180(A)?
 3. Get the eigenvalues for a matrix.
 """
 
@@ -954,27 +969,75 @@ x < y || println("x is not greater than y")
 
 
 ## loops
-# for loops
+# for loops (you can use `in` or `=`)
 for i in 1:10
   println(i)
 end
 
-# while loops
-i = 1
-while i<=10
-  println(i)
-  i += 1
+"""
+A quick note on scoping:
+
+Scoping rules are relatively intuitive, but since Julia >= 1.0.0, 
+loops do not allow modifying global variables (such as those that have been
+assigned in the REPL), which, when in REPL, makes
+it less straightforward to use.
+"""
+
+# for instance, this does not work
+j = 0
+for i in 1:5
+  j += i
+end
+# because the loop does not search for variables in the global scope.
+# This is for efficiency (avoiding global variable definitions is, 
+# generally, better coding) and "good" coding standards.
+
+# However, loops do allow modification to the parent scope as long as is local:
+for j in 1:2
+  j = 0
+  for i in 1:5
+    j += i
+    println((j, i))
+  end
 end
 
-# break
+#To allow the modification of global variables there are two options, 
+# surround in a `let` block, such like
+let 
+  j = 0
+  for i in 1:5
+    j += i
+  end
+  println(j)
+end
+
+# or declare that the variable is actually global, and now the loop
+# will look for global variables.
+j = 0
+for i in 1:5
+  global j += i
+end
+println(j)
+
+# so just for illustration in the other looks we have included the global
+# keyword to allow modifying
+
+# while loops
+i = 1
+while i <= 10
+  println(i)
+  global i += 1
+end
+
+# break to stop the loop
 i = 1
 while true
   println(i)
-  i += 1
+  global i += 1
   i > 10 && break
 end
 
-# continue
+# continue for immediately going to the next iteration
 for i = 1:10
   i == 5 && continue
   println(i)
@@ -989,7 +1052,7 @@ end
 
 # a more concise syntax
 for j in 1:5, i in 1:5
-  println(i, " ", j)
+  println(i, " *-i-* ", j)
 end
 
 # iterate over a collection
@@ -1002,7 +1065,7 @@ end
 A = rand(5, 5)
 s = 0.0
 for i ∈ A
-  s += i
+  global s += i
 end
 sum(A) == s
 
@@ -1039,11 +1102,25 @@ end
 
 # iterating over Matrices
 A = zeros(5,3)
-for j in indices(A,2), i in indices(A,1)
+for j in axes(A,2), i in axes(A,1)
   println(i, " ", j)
 end
 
+#= 
+Performance note for iterating over Array:
 
+Since memory access is recorded in linear order, such as:, 
+
+1 4 7
+2 5 8
+3 6 9
+
+it's more efficient to iterate over arrays with the outer loop 
+corresponding to the highest dimension and then go to the 
+lowest dimensions in order (as in the example above, 
+we iterate first over rows first `i` and then columns `j`, thus 
+accessing items in the memory order).
+=#
 
 """
 Exercises:
@@ -1097,8 +1174,8 @@ z
 
 # but already defined variables can be changed
 function fill_with_ones!(x)
-  x[:] = 1
-  nothing
+  x[:] .= 1
+  return nothing
 end
 
 x = zeros(10)
@@ -1155,6 +1232,8 @@ using BenchmarkTools
 f(x) = sum(x)
 @benchmark f([1,2,3,4,5])
 @benchmark f($[1,2,3,4,5])
+# here we escape the creation and allocation of the vector so 
+# it is only evaluating the sum of the vector.
 
 """
 Exercises:
@@ -1162,11 +1241,12 @@ Exercises:
 1. Benchmark the creation of a vector using these alternatives:
    i.   `zeros(100)` 
    ii.  `fill(2.5, 100)` 
-   iii. `Array{Float64,1}(100)`
-2. Is it faster to use `Array{Float64,1}(100)` and then fill the vector with 
-   zeros instead of using `zeros()`? (tip: use `begin` evaluation `end` to 
-   benchmark several lines) 
+   iii. `Array{Float64,1}(undef, 100)`
+2. Is it faster to use `Array{Float64,1}(undef, 100)` and then fill the 
+   vector with zeros instead of using `zeros()`? (tip: use `begin` 
+   evaluation `end` to benchmark several lines) 
 """
+
 #######
 
 
@@ -1207,11 +1287,11 @@ fp(Int8(1))
 methods(fp)
 
 # let's explore the methods from a Base function
-methods(mean)
+methods(randn)
 
 # this is great for "Type Stability"
-divide(n::Int64, d::Int64) = div(n,d)
-divide(n::Float64, d::Float64) = n/d
+divide(n::Int64, d::Int64) = div(n,d) # between integers
+divide(n::Float64, d::Float64) = n/d  # between floats
 
 
 ## parametric multiple dispatch
@@ -1243,7 +1323,7 @@ sum_number("1", "1")
 # let's create a method for strings (this is a bit of inefficient
 # meta-programming)
 function sum_number(x::String, y::String)
-  eval(parse(*(x, "+", y)))
+  eval(Meta.parse(*(x, "+", y)))
 end
 
 # now we have a method for strings
@@ -1252,7 +1332,7 @@ sum_number("1", "1")
 # one can also have methods for different array dimensions
 # (notice the preallocation within the function)
 function elem_prod(x::Array{Float64,N}, y::Array{Float64,N}) where {N}
-  s = Array{Float64,N}(size(x))
+  s = Array{Float64,N}(undef,size(x))
   for i in eachindex(x)
     s[i] = x[i] + y[i]
   end
@@ -1273,7 +1353,7 @@ elem_prod([1.0,2.0,3.0], [1.0 2.0 3.0])
 # this is powerful: it is flexible yet it allows
 # the compiler to know the result type and dimension
 function elem_sum(x::Array{T,N}, y::Array{T,N}) where {T<:Number, N}
-  s = Array{T,N}(size(x))
+  s = Array{T,N}(undef, size(x))
   for i in eachindex(x)
     s[i] =  x[i] + y[i]
   end
@@ -1322,11 +1402,11 @@ prodsum(2, y = 3, z = 5)
 
 #=
 Don't go crazy with keyword arguments because there is a slight 
-overhead when matching.
+overhead to perform the matching matching.
 =#
 
 # multiple return values (easy! and no almost no overhead)
-function sum_prod{N}(x::Array{Float64,N})
+function sum_prod(x::Array{Float64,N}) where {N}
   return sum(x), prod(x)
 end
 
@@ -1346,11 +1426,11 @@ Exercises:
    for the probability of success.
 2. Create a function that always returns the number of times you have
    called it.
-3. Use the `find()` function to find the indexes of the elements that match
+3. Use the `findall()` function to find the indexes of the elements that match
    10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. (tip: find can use
    anonymous functions as `map()`)
 4. Create a `bang` (i.e., `!`) function that successfully changes an array in
-   place.
+   place in some way.
 5. Create a function where you sum over all elements of a matrix with
    a nested loop. Determine which is more efficient: looping over the
    columns in the outer loop or over the rows. Why is there a difference?
@@ -1378,7 +1458,7 @@ using Distributions
 gauss = Normal(3.0, 1.5)
 
 # `fieldnames()` gives the appropriate parameters
-fieldnames(gauss)
+fieldnames(typeof(gauss))
 
 # 10 random samples
 rand(gauss,10)
@@ -1418,13 +1498,17 @@ Exercise:
 ## Probability evaluation
 
 # probability density function (pdf)
-lik = pdf(gfit, [2.0,3.4,1.3])
+lik = pdf.(gfit, [2.0,3.4,1.3])
 
 # log pdf
-loglik = logpdf(gfit, [2.0,3.4,1.3])
+loglik = logpdf.(gfit, [2.0,3.4,1.3])
 
 # total log likelihood
 loglikelihood(gfit,[2.0,3.4,1.3])
+
+# NOTE: I personally create my own simplified and problem tailores 
+# PDFs in logarithmic space for likelihood evaluation as I found them 
+# to be much faster
 
 # cumulative density function
 cdf(gfit, 3.)
@@ -1488,12 +1572,12 @@ describe(df)
 names(df)
 
 # by Type (note how DataFrames allow for `NA`)
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C3], 10)
+df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 10)
 
-# head and tail
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C3], 100)
-head(df)
-tail(df)
+# first and last
+df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 100)
+first(df, 6)
+last(df, 3)
 
 # comprehensions
 df = DataFrame([randn(10) for i in 1:5])
@@ -1513,7 +1597,7 @@ df[:x2]    # by name
 df[4,:]
 
 # sort rows in place
-sort!(df, cols = :x2)
+sort!(df, :x2)
 
 # sort rows according to more than one column
 # here first by column 1 in reverse sort, then column 3 in normal sort 
@@ -1563,21 +1647,21 @@ end
 # you should close the connection
 close(file)
 
+# use DelimitedFiles package
+using DelimitedFiles
 
 # readdlm is a basic Array reader
 readdlm(homedir()*"/repos/julia_intro/iris.csv", ',')
 
 # `writedlm(file, array)` writes Arrays to a file.
-
-# readcsv and writecsv already understand that the delimitation is `,`
-readcsv(homedir()*"/repos/julia_intro/iris.csv")
-
+# but we are not going to write anything here
 
 ## CSV works great with DataFrames
 # Pkg.add("CSV")
 using CSV
 
-# load the Iris Data Set (# change to specific directory)
+# load the (never used before) Iris Data Set (change your wd 
+# to the specific directory)
 iris = CSV.read(homedir()*"/repos/julia_intro/iris.csv")
 
 describe(iris)
@@ -1585,10 +1669,10 @@ size(iris)
 names(iris)
 
 # modify iris and write to file 
-setosa = iris[find(iris[:Species] .== "setosa"),:]
+setosa = iris[findall(iris[:Species] .== "setosa"),:]
 
 
-CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
+# CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
 
 
 ## Using JLD (Julia Native Format, faster)
@@ -1630,6 +1714,8 @@ Basic Parallel computing
 
 # open julia with `-p <ncores>` parameter
 
+using Distributed
+
 # how many workers?
 workers()
 
@@ -1639,6 +1725,7 @@ addprocs(2)
 # check
 workers()
 
+# remove worker
 rmprocs(4)
 
 # check
@@ -1647,86 +1734,17 @@ workers()
 # the `everywhere` macro ensure code is available in all processes
 @everywhere using Distributions
 
+using SharedArrays
 # the parallel macro and shared arrays
 r = SharedArray{Float64}(1_000)
-@parallel for i in 1:1_000
+@distributed for i in 1:1_000
   r[i] = mean(fit(Normal, randn(1_000)))
 end
 
-# post loop aggregation
-n1 = @parallel (+) for i in 1:10_000
+# post loop aggregation, here summing over the result
+n1 = @distributed (+) for i in 1:10_000
   rand(0:1)
 end
-
-
-#=
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Very Basic Plotting
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-=#
-
-# Plotting is only available through external libraries
-
-## Plots.jl
-# Plots is a metapackage with different backends, for 
-# full documentation check http://docs.juliaplots.org/latest/
-using Plots
-
-# you can specify the back end (defaults to what you have installed)
-gr()
-
-x = randn(10)
-y = randn(10)
-sp = scatter(x, y)
-
-# plot two different series
-lp = plot(cumsum(randn(100,2)), linewidth = 2)
-
-# plot a histogram
-hp = histogram(randn(1_000), ylabel = "frequency", nbins = 20)
-
-# 2D histogram
-h2 = histogram2d(randn(10_000),randn(10_000),nbins=20)
-
-# plot all of them
-plot(sp,lp,hp, h2, layout = (2,2))
-
-
-# parametric plot
-# plot(function, start, end)
-plot((x -> x^2), 0, 2, linewidth = 4)
-
-# add a scatter plot
-y = [0.1:0.1:2...].^2 .* randexp(20)
-scatter!(0.1:0.1:2, y, color = :orange)
-
-# add titles and axis labels: use
-# title!, xaxis!, yaxis!, xlabel!, ylabel!, xlims!
-title!("This is such a contrived example")
-xaxis!("x")
-yaxis!("growth")
-
-# add a 1:1 line
-plot!((x -> x),0,2, linewidth = 2)
-
-
-#=
-Other options are
-
-## Gadfly.jl
-# Gadfly interface is similar to ggplot2 in R
-
-## PyPlot.jl
-# PyPlot using Python's matplotlib without overhead
-=#
-
-"""
-Exercise:
-
-1. Plot a scatter plot of 20 data points, y = 1 + 0.3x + ϵ, where 
-   ϵ ~ Normal(0,0.2).
-2. Add the line of the model used to produce this data.
-"""
 
 
 #=
@@ -1759,7 +1777,7 @@ eval(x)
 
 # parse returns an Expr object from a string
 x  = "1 + 2^3"
-px = parse(x)
+px = Meta.parse(x)
 eval(px)
 
 
