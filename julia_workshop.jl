@@ -1,12 +1,9 @@
 #=
-Introduction to Julia
-YCRC Workshop, Yale University
+Basic introduction to Julia
 
 Ignacio Quintero Mächler
 
-Created 07 12 2017 for Julia v0.6.x
-Updated 04 02 2019 for Julia v1.0.x
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+t(-_-t)
 =#
 
 
@@ -14,10 +11,11 @@ Updated 04 02 2019 for Julia v1.0.x
 Some Documentation:
 i.   the official: https://docs.julialang.org/en/v1/
 ii.  wiki books: https://en.wikibooks.org/wiki/Introducing_Julia
-iii. stack overflow...
-iv. For performance this book:
-    Julia High Performance by Avik Sengupta,
-    ...but some of it is out of date.
+iii. Slack: julialang.slack.com. Very active and responsive community
+iv.  stack overflow...
+v.   For performance this book:
+     Julia High Performance by Avik Sengupta,
+     ...but some of it is out of date.
 
 To use the REPL (Read Evaluate Print Loop)
 
@@ -41,10 +39,10 @@ Access documentation
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 =#
 
-# type `?` followed by the command
-
-# use `apropos()` to search the documentation for function
+# use `apropos()` to search for matching functions
 apropos("product")
+
+# type `?` followed by the command
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -183,9 +181,9 @@ NaN16, NaN32
 1e4
 typeof(ans)
 
-# convert between Int and Float
+# convert between Int and Float (always avoid if possible)
 x = convert(Int64, 1.0)
-typeof(x)
+isa(x, Int64)
 
 Int64(1.0)
 
@@ -213,8 +211,8 @@ s = """
     This is a Julia Workshop
     """
 
-# you can subset a string and get a `Char`
-s[1]
+# you can subset a string and get a `String` or a `Char`
+s[1:3]
 s[6]
 
 
@@ -358,6 +356,7 @@ using RCall
 # get a variable defined in R
 R"x = 2+4"
 @rget x
+typeof(x)
 
 # put a variable defined in Julia into R 
 t = 10
@@ -382,7 +381,7 @@ R"plot(runif(10), runif(10), bty = 'n')"
 
 # Similarly with Python (you need Python installed)
 using PyCall
-@pyimport numpy.random as nr
+nr = pyimport("numpy.random")
 nr.rand(3,4)
 
 #= 
@@ -390,7 +389,6 @@ Check the packages documentation for more information
 RCall:  http://juliainterop.github.io/RCall.jl/stable/
 PyCall: https://github.com/JuliaPy/PyCall.jl
 =#
-
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -400,7 +398,10 @@ Vectors and Arrays
 
 ## vectors are delimited by using square brackets `[` and  `]`
 x = [2, 3, 5]
-typeof(x) == Vector{Int64}
+isa(x, Vector{Int64})
+
+# Vector is an alias of a one-dimensional array
+Vector{Float64} == Array{Float64,1}
 
 # vectors with at least one Float will be converted to all Floats
 x = [2, 3.0, 5]
@@ -426,7 +427,7 @@ x[[2,3]]
 x[2:3]
 typeof(2:3)
 
-# length and endof return the length
+# length and lastindex return the length
 lastindex(x) == length(x)
 
 # `end` returns the last item
@@ -476,11 +477,13 @@ sr = 1:2:6
 typeof(sr)
 
 # you can construct with `range` it estimates the 
-# steprange according to the number of objects and the step size
+# StepRange according to the number of objects and the step size
 1:2:6 == range(1, step=2, length=3)
 
 # also works with Floats
 sr = 1.0:0.1:2.0
+
+# transform into a vector
 v = collect(sr)
 
 # this can also be achieved with
@@ -506,7 +509,7 @@ x = zeros(10)
 v = fill(x, 5)
 u = fill(v, 5)
 
-typeof(u) == Vector{Vector{Vector{Float64}}}
+isa(u, Vector{Vector{Vector{Float64}}})
 
 
 ## Functions on vectors
@@ -560,10 +563,11 @@ x[1:5] .= 1
 x
 
 # you can also use fill! to create vectors
+v = fill!(Array{String}(undef, 3), "hello")
+
+# which seems to be as fast as:
 v = fill("hello", 3)
 
-# which seems to be slightly (I got 0.2 ns slower) faster than:
-v = fill!(Array{String}(undef, 3), "hello")
 
 
 """
@@ -590,8 +594,6 @@ Exercises:
 
 
 ## Multi-Dimensional Arrays
-# vectors are an alias of Array{T,1}
-Vector{Any} == Array{Any,1}
 
 # compare the construction
 [1, 2, 3] == [1 2 3]
@@ -603,7 +605,7 @@ Vector{Any} == Array{Any,1}
 # create along second dimensions
 [1 2 3; 4 5 6]
 
-# Matrix is an alias for a two dimensional Array
+# Matrix is an alias for a two-dimensional Array
 Matrix{Any} == Array{Any,2}
 
 # most of the above functions work for multidimensional arrays
@@ -621,7 +623,7 @@ size(A)
 length(A)
 
 # fast construction (again)
-A = Array{Float64}(undef, 5,5,3)
+A = Array{Float64}(undef,5,5,3)
 
 # repeat a vector along each dimension
 # repeat twice in dim one (rows)
@@ -721,7 +723,7 @@ d = Dict([1,0,0] => "one",
 d[[0,1,0]]
 
 # Create a Dictionary using comprehensions
-d = Dict("r$i" => randn() for i =1:10)
+d = Dict("r$i" => randn() for i = 1:10)
 
 # get allows you to returns another value if the key is not found
 get(d, "r1", NaN)
@@ -793,7 +795,7 @@ rand()
 Random.seed!(123)
 rand(10)
 
-Random.srand(123)
+Random.seed!(123)
 rand(10)
 
 # make an array with random uniform numbers
@@ -836,7 +838,7 @@ v = randperm(10)
 shuffle!(v)
 
 ## basic statistics in library `Statistics`
-x = randn(1_000)
+x = randn(10_000)
 
 mean(x)
 std(x)
@@ -849,9 +851,8 @@ prod(x)
 # before aggregating
 mean(exp, x)
 
-
 # Pearson correlation and covariance
-y = randn(1_000).*0.1
+y = randn(10_000) .* 0.1
 cor(x, y)
 cov(x, y)
 
@@ -865,8 +866,11 @@ A = rand(10,10)
 A .+ 1.0
 
 # scalar product
-2A
-rmul!(A,2)
+2.0A
+
+# change in place
+using LinearAlgebra
+rmul!(A, 2.0)
 
 # matrix sum
 B = ones(10,10)
@@ -946,10 +950,10 @@ r = if x > 3
       "$x is smaller than 3"
     end
 
-# ternery operators
+# ternery operators (concise if else statement)
 x = 3; y = 1
 
-x > y ? x : y
+x > y ? "$x is greater than $y" : "$x is smaller than $y"
 
 # AND and OR
 x > 0 && y < 10
@@ -990,7 +994,7 @@ for i in 1:5
 end
 # because the loop does not search for variables in the global scope.
 # This is for efficiency (avoiding global variable definitions is, 
-# generally, better coding) and "good" coding standards.
+# overall, better coding) and follows "good" coding standards.
 
 # However, loops do allow modification to the parent scope as long as is local:
 for j in 1:2
@@ -1003,8 +1007,7 @@ end
 
 #To allow the modification of global variables there are two options, 
 # surround in a `let` block, such like
-let 
-  j = 0
+let j = 0
   for i in 1:5
     j += i
   end
@@ -1019,8 +1022,11 @@ for i in 1:5
 end
 println(j)
 
-# so just for illustration in the other looks we have included the global
-# keyword to allow modifying
+#=
+so just, for illustration, in the following loops we have included the global
+keyword to allow modifying, but you should never include this in your 
+actual code
+=#
 
 # while loops
 i = 1
@@ -1037,7 +1043,7 @@ while true
   i > 10 && break
 end
 
-# continue for immediately going to the next iteration
+# continue for skipping to the next iteration
 for i = 1:10
   i == 5 && continue
   println(i)
@@ -1052,8 +1058,16 @@ end
 
 # a more concise syntax
 for j in 1:5, i in 1:5
-  println(i, " *-i-* ", j)
+  println("i -> ",i," and j -> ", j)
 end
+
+# NOTE: with string, it is more efficient to not use the interpolation `$` when
+# concatenating strings
+s = "hola"
+# this is better
+*(s, " gente")
+# than this
+"$s gente"
 
 # iterate over a collection
 S = [1, 10, NaN]
@@ -1061,7 +1075,7 @@ for s in S
   println(s)
 end
 
-# iterate over array (note the `∈` == in == `=` in loops)
+# iterate over array (note the `∈` == `in` == `=` in loops)
 A = rand(5, 5)
 s = 0.0
 for i ∈ A
@@ -1077,12 +1091,17 @@ for i = eachindex(v)
   println(i)
 end
 
-# create a tuple with the iteration and the value of v
+# create a tuple with the iteration and the value of `v`
 for i = enumerate(v)
   println(i)
 end
 
-# `enumerate()` is a great way to create some Dictionaries
+# Most efficient loop if looping over a `UnitRange` that starts at `1`
+for i = Base.OneTo(10)
+  println(i)
+end
+
+# `enumerate()` is a great way to create a Dictionary
 d = Dict(i => v for (i,v) in enumerate(v))
 
 # iterate over dictionary keys
@@ -1103,7 +1122,7 @@ end
 # iterating over Matrices
 A = zeros(5,3)
 for j in axes(A,2), i in axes(A,1)
-  println(i, " ", j)
+  println("row = ",i, "; col = ", j)
 end
 
 #= 
@@ -1161,7 +1180,8 @@ end
 f(4)
 f(-4)
 
-# `dot` syntax for a function (vectorizing it). I do not recommend it.
+# `dot` syntax for a function (vectorizing it). I do not recommend it, 
+# do not be afraid of loops!
 f.(-3:3)
 
 # z will not be defined in the outer scope
@@ -1196,7 +1216,7 @@ end
 
 fbad(10)
 
-# this is good
+# this is good :)!
 function fgood(x, k)
   x + k
 end
@@ -1235,6 +1255,31 @@ f(x) = sum(x)
 # here we escape the creation and allocation of the vector so 
 # it is only evaluating the sum of the vector.
 
+# let's compare the benchmark of a normal density evaluation and 
+# a normal random generator with R (which is an immediate call to C )
+
+# in R
+reval("""
+      if (!("microbenchmark" %in% rownames(installed.packages()))) {
+        install.packages('microbenchmark')
+      }
+      library(microbenchmark)
+      microbenchmark(
+        dnorm(1.0, 0.5, 1.0, TRUE),
+        rnorm(1L, 0.5, 2.0)
+      )
+      """)
+
+# define normal log-density
+logdnorm(x::Float64, μ::Float64, σ²::Float64) = 
+  -(0.5*log(2.0π) + 0.5*log(σ²) + (x - μ)^2/(2.0σ²))
+
+# define generator for non-standard normal
+rnorm(μ::Float64, σ::Float64) = μ + randn()*σ
+
+@benchmark logdnorm(1.0, 0.5, 1.0)
+@benchmark rnorm(0.5, 1.0)
+
 """
 Exercises:
 
@@ -1264,7 +1309,7 @@ map(cos, 0:π/4:2π)
 # for more than one argument, use a tuple
 map((x,y) -> x + y, [1:10...], [2:11...])
 
-# can also be empty
+# can also be empty (here, of course, is useless)
 map(() -> rand(0:1,10))
 
 
@@ -1301,8 +1346,8 @@ function sum_same_type(x::T, y::T) where {T}
 end
 
 # it works if arguments have the same type
-sum_same_type(1,1)
-sum_same_type(1.0,1.0)
+sum_same_type(1, 1)
+sum_same_type(1.0, 1.0)
 
 # but throws an error not if they are of different types
 sum_same_type(1.0,1)
@@ -1376,8 +1421,10 @@ function fval(x::Int64, ::Type{Val{2}})
 end
 
 # to evaluate, you need `Val{}` again
-fval(5, Val{1})
-fval(5, Val{2})
+x = 1
+y = 2
+fval(5, Val{x})
+fval(5, Val{y})
 
 
 # Arguments are passed in order
@@ -1402,7 +1449,7 @@ prodsum(2, y = 3, z = 5)
 
 #=
 Don't go crazy with keyword arguments because there is a slight 
-overhead to perform the matching matching.
+overhead to perform the matching.
 =#
 
 # multiple return values (easy! and no almost no overhead)
@@ -1506,7 +1553,7 @@ loglik = logpdf.(gfit, [2.0,3.4,1.3])
 # total log likelihood
 loglikelihood(gfit,[2.0,3.4,1.3])
 
-# NOTE: I personally create my own simplified and problem tailores 
+# NOTE: I personally create my own simplified and problem-tailored 
 # PDFs in logarithmic space for likelihood evaluation as I found them 
 # to be much faster
 
@@ -1526,7 +1573,7 @@ mvmean = [1.0,2.0,1.5]
           0.2 1.0 0.5;
           0.9 0.5 1.0]
 
-mvn  = MvNormal(mvmean,Σ)
+mvn = MvNormal(mvmean,Σ)
 
 # most functions for univariate distributions 
 # work for multivariate distributions
@@ -1563,7 +1610,7 @@ df = DataFrame(A=1:5, B=rand(5), C=randstring.([5,5,5,6,7]))
 typeof(ans)
 
 # columns types 
-eltypes(df)
+eltype.(eachcol(df))
 
 # summary stats
 describe(df)
@@ -1590,8 +1637,8 @@ df = DataFrame(rand(20,5))
 df[:,1]
 
 # but also 
-df[2]      # by number
-df[:x2]    # by name
+df[!,2]      # by number
+df[!,:x2]    # by name
 
 # rows
 df[4,:]
@@ -1601,7 +1648,7 @@ sort!(df, :x2)
 
 # sort rows according to more than one column
 # here first by column 1 in reverse sort, then column 3 in normal sort 
-sort!(df, cols = (:1,:3), rev = (true,false))
+sort!(df, (:1,:3), rev = (true,false))
 
 # delete a row
 deleterows!(df, 3:4)
@@ -1668,13 +1715,6 @@ describe(iris)
 size(iris)
 names(iris)
 
-# modify iris and write to file 
-setosa = iris[findall(iris[:Species] .== "setosa"),:]
-
-
-# CSV.write(homedir()*"/repos/julia_intro/setosa.csv", setosa)
-
-
 ## Using JLD (Julia Native Format, faster)
 # Pkg.add("JLD")
 using JLD
@@ -1685,11 +1725,6 @@ t = randn(2,10)
 
 # the syntax of save is `file`, `save var with name`, `var`, ...
 save(homedir()*"/repos/julia_intro/work.jld", "var1", x, "var2", t)
-
-# clean workspace (it also removes loaded packages)
-workspace()
-
-using JLD
 
 # load variables (as dictionary)
 d = load(homedir()*"/repos/julia_intro/work.jld")
@@ -1720,7 +1755,7 @@ using Distributed
 workers()
 
 # add and remove workers 
-addprocs(2)
+addprocs(3)
 
 # check
 workers()
@@ -1734,6 +1769,7 @@ workers()
 # the `everywhere` macro ensure code is available in all processes
 @everywhere using Distributions
 
+# using SharedArrays so that all workers can access the Array
 using SharedArrays
 # the parallel macro and shared arrays
 r = SharedArray{Float64}(1_000)
@@ -1755,7 +1791,7 @@ A tiny bit of Meta Programming
 
 # All code in Julia is represented as Julia code structures itself
 
-# Expr are code objects that are not evaluated
+# `Expr` are code objects that are not evaluated
 x = :(2.0 + 2.0)
 typeof(ans)
 
@@ -1779,6 +1815,266 @@ eval(x)
 x  = "1 + 2^3"
 px = Meta.parse(x)
 eval(px)
+
+
+#=
+let's look at a more advanced example with `@generated` functions
+from actual useful functions
+
+Let's create an simple approximating function from an ordered vector x, and 
+a function y = f(x).
+=#
+
+## Let's create some random data to create a function y = f(x)
+# `x` is a sorted vector (e.g., time)
+x = cumsum(rand(100))
+x[1] = 0.0
+
+# `y` is 4 `parallel` multivariate functions under Brownian motion
+y = randn(100, 4)
+cumsum!(y, y, dims = 1)
+
+
+## First we need a linear interpolation function
+
+"""
+    linpred(val::Float64, x1::Float64, x2::Float64, y1::Float64, y2::Float64)
+
+Estimate val according to linear interpolation for a range.
+"""
+linpred(val::Float64, x1::Float64, x2::Float64, y1::Float64, y2::Float64) = 
+  (y1 + (val - x1)*(y2 - y1)/(x2 - x1))
+
+
+# example
+val = x[2] - rand()*x[2]
+linpred(val, x[1], x[2], y[1,1], y[2,1])
+
+## Second create an efficient index searcher for a sorted vector
+
+"""
+    idxrange(x::Array{Float64,1}, val::Float64)
+
+Get indexes in sorted vector `x` corresponding to the range in which 
+`val` is in using a sort of uniroot algorithm.
+"""
+function idxrange(x::Array{Float64,1}, val::Float64)
+
+  @inbounds begin
+
+    a::Int64 = 1
+
+    if x[a] > val
+      return a, false
+    end
+
+    b::Int64 = lastindex(x)
+
+    if x[b] < val
+      return b, false
+    end
+
+    mid::Int64 = div(b,2)
+
+    while b-a > 1
+      val < x[mid] ? b = mid : a = mid
+      mid = div(b + a, 2)
+    end
+
+    if x[a] == val 
+      return a, false
+    elseif x[b] == val
+      return b, false
+    else
+      return a, true
+    end
+
+  end
+end
+
+
+# example: returns the closer left index in x to the value
+idx, inside = idxrange(x, 20.)
+x[35]
+x[36]
+
+# this is efficient
+@benchmark idxrange($x, 19.)
+
+# we can check that it is type stable
+@code_warntype idxrange(x, 19.)
+
+
+## Now let's make a meta program that does not loop through each of the 
+# y columns
+
+# We need to define some arguments that will go into the function (see later)
+N  = ndims(y)
+nc = size(y,2)
+
+# start the Expr
+lex1 = quote end
+pop!(lex1.args)
+
+# push the linear prediction and unroll
+if isone(N)
+  push!(lex1.args, 
+    :(r[1] = linpred(t, x[a], x[a+1], y[a], y[a+1])::Float64))
+else
+  # unroll loop
+  for i = Base.OneTo(nc)
+    push!(lex1.args, 
+      :(r[$i] = linpred(t, xa, xap1, y[a,$i], y[a+1, $i])::Float64))
+  end
+
+  # add one assignment
+  pushfirst!(lex1.args, :(xap1 = x[a+1]::Float64))
+  pushfirst!(lex1.args, :(xa   = x[a]::Float64))
+end
+
+lex2 = quote end
+pop!(lex2.args)
+
+# if the value is outside of `x` 
+if isone(N)
+  push!(lex2.args, :(r[1] = y[a]::Float64))
+else
+  # unroll loop
+  for i = Base.OneTo(nc)
+    push!(lex2.args, :(r[$i] = y[a,$i]::Float64))
+  end
+end
+
+# join both expressions
+lex = quote
+  a, lp = idxrange(x, t)::Tuple{Int64, Bool}
+  if lp 
+    $lex1 
+  else 
+    $lex2 
+  end
+end
+
+# aesthetic cleaning
+deleteat!(lex.args,[1,3])
+
+popfirst!(lex.args[2].args[2].args)
+lex.args[2].args[2] = lex.args[2].args[2].args[1]
+
+popfirst!(lex.args[2].args[3].args)
+lex.args[2].args[3] = lex.args[2].args[3].args[1]
+
+
+#=
+Now let's put it in a `@generated` function. This special awesome function
+will first  generate the code, and then will only evaluate the Expression.
+=#
+
+"""
+    @generated function approxf_full(t ::Float64,
+                                     r ::Array{Float64,1},
+                                     x ::Array{Float64,1}, 
+                                     y ::Array{Float64,N},
+                                     ::Val{nc}) where {N, nc}
+Returns the values of `y` at `t` using an approximation function.
+"""
+@generated function approxf_full!(t ::Float64,
+                                 r ::Array{Float64,1},
+                                 x ::Array{Float64,1}, 
+                                 y ::Array{Float64,N},
+                                 ::Val{nc}) where {N, nc}
+
+  lex1 = quote end
+  pop!(lex1.args)
+
+  if isone(N)
+    push!(lex1.args, 
+      :(r[1] = linpred(t, x[a], x[a+1], y[a], y[a+1])::Float64))
+  else
+    # unroll loop
+    for i = Base.OneTo(nc)
+      push!(lex1.args, 
+        :(r[$i] = linpred(t, xa, xap1, y[a,$i], y[a+1, $i])::Float64))
+    end
+
+    # add one assignment
+    pushfirst!(lex1.args, :(xap1 = x[a+1]::Float64))
+    pushfirst!(lex1.args, :(xa   = x[a]::Float64))
+  end
+
+  lex2 = quote end
+  pop!(lex2.args)
+
+  if isone(N)
+    push!(lex2.args, :(r[1] = y[a]::Float64))
+  else
+    # unroll loop
+    for i = Base.OneTo(nc)
+      push!(lex2.args, :(r[$i] = y[a,$i]::Float64))
+    end
+  end
+
+  lex = quote
+    a, lp = idxrange(x, t)::Tuple{Int64, Bool}
+    if lp 
+      $lex1 
+    else 
+      $lex2 
+    end
+  end
+
+  # aesthetic cleaning
+  deleteat!(lex.args,[1,3])
+
+  popfirst!(lex.args[2].args[2].args)
+  lex.args[2].args[2] = lex.args[2].args[2].args[1]
+
+  popfirst!(lex.args[2].args[3].args)
+  lex.args[2].args[3] = lex.args[2].args[3].args[1]
+
+  println(lex)
+
+  return quote
+    @inbounds begin
+      $lex
+    end
+    return nothing
+  end
+end
+
+
+# example
+r = Array{Float64,1}(undef,size(y,2)) # preallocate resulting interpolation
+approxf_full!(11., r, x, y, Val(nc))
+r
+
+# compare to a non generated function
+function approxf_full_std!(t ::Float64,
+                           r ::Array{Float64,1},
+                           x ::Array{Float64,1}, 
+                           y ::Array{Float64,N},
+                           nc::Int64) where {N}
+
+  @inbounds begin
+    a, lp = idxrange(x, t)::Tuple{Int64, Bool}
+
+    if lp
+      xa = x[a]::Float64
+      xap1 = x[a + 1]::Float64
+      for i = Base.OneTo(nc)
+        r[i] = linpred(t, xa, xap1, y[a, i], y[a + 1, i])::Float64
+      end
+    else
+        r[i] = y[a, i]::Float64
+    end
+  end
+
+  return nothing
+end
+
+@benchmark approxf_full!(5., $r, $x, $y, $(Val(nc)))
+
+@benchmark approxf_full_std!(5., $r, $x, $y, $nc)
 
 
 
