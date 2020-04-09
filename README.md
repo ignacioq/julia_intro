@@ -29,7 +29,7 @@ You should be able to send code from Sublime into Julia by pressing `Cmd + Enter
 
 ### Useful packages
 
-Please install the following packages by typing `]` (to access the Package Manager) in the Julia prompt (i.e., `julia>`) and type the following:
+Please install the following packages by typing `]` in the Julia prompt (i.e., `julia>`) to access the Package Manager (the prompt should change to be something like `(@v1.4) pkg>`) and type the following:
 ```
 add BenchmarkTools
 add Distributions
