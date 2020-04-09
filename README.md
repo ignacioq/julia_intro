@@ -34,8 +34,6 @@ Please install the following packages by typing `]` in the Julia prompt (i.e., `
 add BenchmarkTools
 add Distributions
 add DataFrames
-add Plots
-add GR
 add RCall  # For interaction with R
 add PyCall # For interaction with Python
 add CSV
@@ -43,5 +41,5 @@ add JLD
 ```
 Then precompile them by simply pressing `Del` (to exit the Package Manager) and then calling the packages into the global environment (using `using`): 
 ```
-using BenchmarkTools, Distributions, DataFrames, Plots, GR, RCall, PyCall, CSV, JLD
+using BenchmarkTools, Distributions, DataFrames, RCall, PyCall, CSV, JLD
 ```
