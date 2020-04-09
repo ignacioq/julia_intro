@@ -21,9 +21,7 @@ Follow the instructions on their web page http://docs.junolab.org/latest/man/ins
 8. Repeat steps 5 & 6, and but now type `Julia` and press enter.
 11. Open the Julia REPL in a terminal window (or tmux in Linux, or the respective in Windows).
 12. Download this file `https://github.com/ignacioq/julia_intro/julia_workshop.jl`, and open it in Sublime Text.
-13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively). 
-
-Note: I use iTerm instead of the native OSX Terminal, and I use choose `SendCode: iTerm`.
+13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively). Note: I use iTerm (https://www.iterm2.com) instead of the native OSX Terminal, and I choose `SendCode: iTerm`.
 
 You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows).
 
