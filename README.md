@@ -9,7 +9,7 @@ Follow the instructions on their web page http://docs.junolab.org/latest/man/ins
 
 ### ii. Using Sublime Text (my preferred):
 
-(If you are on Windows, you need to have `Cmder` or `ConEmu` installed and be able to open the Julia REPL from there; otherwise, please use Atom and the Juno distribution).
+(If you are on Windows [which I do not use], you need to have `Cmder` or `ConEmu` installed and be able to open the Julia REPL from there; otherwise, please use Atom and the Juno distribution).
 
 1. Download and install Julia > v1.x here: https://julialang.org/downloads/
 2. Download and install Sublime Text 3 here: https://www.sublimetext.com/3.
