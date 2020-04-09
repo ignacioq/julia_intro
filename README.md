@@ -34,7 +34,8 @@ Please install the following packages by typing `]` in the Julia prompt (i.e., `
 add BenchmarkTools
 add Distributions
 add DataFrames
-add RCall # Requires R
 add Plots
 add GR
+add RCall  # For interaction with R
+add PyCall # For interaction with Python
 ```
