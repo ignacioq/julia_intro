@@ -27,7 +27,7 @@ You should be able to send code from Sublime into Julia by pressing `Cmd + Enter
 
 
 
-### Useful packages
+### Install some useful packages
 
 Please install the following packages by typing `]` in the Julia prompt (i.e., `julia>`) to access the Package Manager (the prompt should change to be something like `(@v1.4) pkg>`) and type the following:
 ```
@@ -38,4 +38,8 @@ add Plots
 add GR
 add RCall  # For interaction with R
 add PyCall # For interaction with Python
+```
+Then precompile them by simply pressing `Del` (to exit the Package Manager) and then calling the packages into the global environment (using `using`): 
+```
+using BenchmarkTools, Distributions, DataFrames, Plots, GR, RCall, PyCall
 ```
