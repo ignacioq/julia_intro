@@ -1,10 +1,17 @@
-Basic introduction to Julia
+# Basic introduction to Julia
 
-### Instructions to set up a workspace
+## Instructions to set up a workspace (similar to the R GUI)
 
-(If you are on Windows, you need to have `Cmder` or `ConEmu` installed and be able to open the Julia REPL from there; otherwise, please use Atom and the Juno distribution following these instructions: https://github.com/JunoLab/uber-juno/blob/master/setup.md).
+### i. Using Atom and Juno:
 
-1. Download and install Julia v1.1 here: https://julialang.org/downloads/
+Follow the instructions on their web page http://docs.junolab.org/latest/man/installation/
+
+
+### ii. Using Sublime Text (my preferred):
+
+(If you are on Windows, you need to have `Cmder` or `ConEmu` installed and be able to open the Julia REPL from there; otherwise, please use Atom and the Juno distribution).
+
+1. Download and install Julia > v1.x here: https://julialang.org/downloads/
 2. Download and install Sublime Text 3 here: https://www.sublimetext.com/3.
 3. Open Sublime Text and install the Package Manager following these instructions: https://packagecontrol.io/installation.
 4. Restart Sublime Text.
@@ -14,10 +21,13 @@ Basic introduction to Julia
 8. Repeat steps 5 & 6, and but now type `Julia` and press enter.
 11. Open the Julia REPL in a terminal window (or tmux in Linux, or the respective in Windows).
 12. Download this file `https://github.com/ignacioq/julia_intro/julia_workshop.jl`, and open it in Sublime Text.
-13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to
-(`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively).
+13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `enter` on the program you want to send the code to (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively). 
+
+Note: I use iTerm instead of the native OSX Terminal, and I use choose `SendCode: iTerm`.
 
 You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows).
+
+
 
 ### Useful packages
 
