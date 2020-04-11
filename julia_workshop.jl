@@ -2090,17 +2090,17 @@ reval("""
   require(microbenchmark)
 
   f = approxfun(x, y[,1])
-  r1 = f(5.) # check for
+  r1 = f(5.) # evaluate at 5.0
 
   microbenchmark(f(5.))
       """)
 
-# check that is same answer
+# check that we get the same answer
 @rget r1
 
 r1    # R results
 r[1]  # Julia result
-# same answer but waaay faster!
+# same answer but WAY faster!
 
 
 
