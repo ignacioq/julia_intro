@@ -1964,6 +1964,9 @@ lex.args[2].args[2] = lex.args[2].args[2].args[1]
 popfirst!(lex.args[2].args[3].args)
 lex.args[2].args[3] = lex.args[2].args[3].args[1]
 
+# let's see the final function to be evaluated
+lex
+
 
 #=
 Now let's put it in a `@generated` function. This special awesome function
@@ -2045,7 +2048,7 @@ end
 
 # example
 r = Array{Float64,1}(undef,size(y,2)) # preallocate resulting interpolation
-approxf_full!(11., r, x, y, Val(nc))
+approxf_full!(5., r, x, y, Val(nc))
 r
 
 # compare to a non generated function
@@ -2073,9 +2076,31 @@ function approxf_full_std!(t ::Float64,
 end
 
 @benchmark approxf_full!(5., $r, $x, $y, $(Val(nc)))
-
 @benchmark approxf_full_std!(5., $r, $x, $y, $nc)
 
+
+#=
+Finally, let's compare to a similar R function that is implemented in C 
+(not super-fair comparison for our function is very tailored made, but still...)
+=#
+@rput x
+@rput y
+
+reval("""
+  require(microbenchmark)
+
+  f = approxfun(x, y[,1])
+  r1 = f(5.) # check for
+
+  microbenchmark(f(5.))
+      """)
+
+# check that is same answer
+@rget r1
+
+r1    # R results
+r[1]  # Julia result
+# same answer but waaay faster!
 
 
 
