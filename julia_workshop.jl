@@ -1260,7 +1260,7 @@ f(x) = sum(x)
 
 # in R
 reval("""
-      if (!("microbenchmark" %in% rownames(installed.packages()))) {
+      if (!any("microbenchmark" == rownames(installed.packages()))) {
         install.packages('microbenchmark')
       }
       library(microbenchmark)
@@ -1895,8 +1895,8 @@ end
 
 # example: returns the closer left index in x to the value
 idx, inside = idxrange(x, 20.)
-x[35]
-x[36]
+x[idx]
+x[idx+1]
 
 # this is efficient
 @benchmark idxrange($x, 19.)
