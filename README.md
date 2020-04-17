@@ -23,7 +23,7 @@ Follow the instructions on their web page http://docs.junolab.org/latest/man/ins
 12. Download this file https://github.com/ignacioq/julia_intro/julia_workshop.jl, and open it in Sublime Text. _Note_: Julia files end in `.jl`.
 13. Type `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows) and type `SendCode: Choose Program` and press `Enter` on the program you want to send the code to (`terminal`, `Cmder` and `tmux` by default in Mac, Windows and Linux, respectively). _Note_: I use iTerm (https://www.iterm2.com) instead of the native OSX Terminal, and I use `SendCode: Choose Program`, `Enter` and choose `iTerm`.
 
-You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows).
+You should be able to send code from Sublime into Julia by pressing `Cmd + Enter` (`Ctrl + Enter` in Windows). To evaluate Julia code, go to line `43` in the `julia_workshop.jl` file, which is the first julia command that appears.
 
 
 
