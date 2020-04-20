@@ -1096,6 +1096,11 @@ for i = enumerate(v)
   println(i)
 end
 
+# assign the iteration and the value in the loop
+for (i,v) = enumerate(v)
+  println(i, v)
+end
+
 # Most efficient loop if looping over a `UnitRange` that starts at `1`
 for i = Base.OneTo(10)
   println(i)
@@ -1769,6 +1774,12 @@ workers()
 # the `everywhere` macro ensure code is available in all processes
 @everywhere using Distributions
 
+# post loop aggregation, here summing over the result
+n1 = @distributed (+) for i in 1:10_000
+  rand(0:1)
+end
+
+
 # using SharedArrays so that all workers can access the Array
 using SharedArrays
 # the parallel macro and shared arrays
@@ -1777,10 +1788,6 @@ r = SharedArray{Float64}(1_000)
   r[i] = mean(fit(Normal, randn(1_000)))
 end
 
-# post loop aggregation, here summing over the result
-n1 = @distributed (+) for i in 1:10_000
-  rand(0:1)
-end
 
 
 #=
@@ -1840,7 +1847,7 @@ cumsum!(y, y, dims = 1)
 """
     linpred(val::Float64, x1::Float64, x2::Float64, y1::Float64, y2::Float64)
 
-Estimate val according to linear interpolation for a range.
+Estimate `val` according to linear interpolation for a range.
 """
 linpred(val::Float64, x1::Float64, x2::Float64, y1::Float64, y2::Float64) = 
   (y1 + (val - x1)*(y2 - y1)/(x2 - x1))
@@ -1899,7 +1906,7 @@ x[idx]
 x[idx+1]
 
 # this is efficient
-@benchmark idxrange($x, 19.)
+@benchmark idxrange($x, 22.)
 
 # we can check that it is type stable
 @code_warntype idxrange(x, 19.)
@@ -1982,10 +1989,10 @@ will first  generate the code, and then will only evaluate the Expression.
 Returns the values of `y` at `t` using an approximation function.
 """
 @generated function approxf_full!(t ::Float64,
-                                 r ::Array{Float64,1},
-                                 x ::Array{Float64,1}, 
-                                 y ::Array{Float64,N},
-                                 ::Val{nc}) where {N, nc}
+                                  r ::Array{Float64,1},
+                                  x ::Array{Float64,1}, 
+                                  y ::Array{Float64,N},
+                                  ::Val{nc}) where {N, nc}
 
   lex1 = quote end
   pop!(lex1.args)
@@ -2048,7 +2055,7 @@ end
 
 # example
 r = Array{Float64,1}(undef,size(y,2)) # preallocate resulting interpolation
-approxf_full!(5., r, x, y, Val(nc))
+approxf_full!(5., r, x, y, Val(size(y,2)))
 r
 
 # compare to a non generated function
