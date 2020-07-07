@@ -1992,7 +1992,7 @@ Returns the values of `y` at `t` using an approximation function.
                                   r ::Array{Float64,1},
                                   x ::Array{Float64,1}, 
                                   y ::Array{Float64,N},
-                                  ::Val{nc}) where {N, nc}
+                                  ::Type{Val{nc}}) where {N, nc}
 
   lex1 = quote end
   pop!(lex1.args)
@@ -2055,7 +2055,7 @@ end
 
 # example
 r = Array{Float64,1}(undef,size(y,2)) # preallocate resulting interpolation
-approxf_full!(5., r, x, y, Val(size(y,2)))
+approxf_full!(5., r, x, y, Val{size(y,2)})
 r
 
 # compare to a non generated function
@@ -2082,9 +2082,8 @@ function approxf_full_std!(t ::Float64,
   return nothing
 end
 
-@benchmark approxf_full!(5., $r, $x, $y, $(Val(nc)))
-@benchmark approxf_full_std!(5., $r, $x, $y, $nc)
-
+@benchmark approxf_full!(5., $r, $x, $y, $(Val{(size(y,2))}))
+@benchmark approxf_full_std!(5., $r, $x, $y, $(size(y,2)))
 
 #=
 Finally, let's compare to a similar R function that is implemented in C 
