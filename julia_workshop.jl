@@ -1610,38 +1610,62 @@ r[1]  # Julia result
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Using ClaDS
+Using ClaDS in JPANDA
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 =#
 
+using PANDA
 
 
+# simulate a tree
+n  = 20    # number of tips
+σ  = 0.2   # branch heterogeneity
+α  = 1.2   # "drift"
+ε  = 0.3   # turnover
+λ0 = 1.0   # initial speciation rate
 
+tree = sim_ClaDS2_ntips(n, σ, α, ε, λ0, 
+  prune_extinct = true)
 
+# check the number of tips
+n_tips(tree)
 
+# plot the tree (using )
+plot_ClaDS(tree)
 
+# make inference
+output = infer_ClaDS(tree)
 
+# plot the inferred tree
+plot_CladsOutput(output)
 
+# plot the diversity through time plot (DTT)
+plot_CladsOutput(output, method = "DTT")
 
+# plot the mean rate through time plot
+plot_CladsOutput(output, method = "RTT")
 
+## plot the posterior distributions
+# sigma trace
+plot_CladsOutput(output, method = "chain", id_par = "σ")
+# sigma density
+plot_CladsOutput(output, method = "density", id_par = "σ")
 
+# alpha trace
+plot_CladsOutput(output, method = "chain", id_par = "α")
+# alpha density
+plot_CladsOutput(output, method = "density", id_par = "α")
 
+# turnover trace
+plot_CladsOutput(output, method = "chain", id_par = "ε")
+# turnover density
+plot_CladsOutput(output, method = "density", id_par = "ε")
 
+# initial speciation rate trace
+plot_CladsOutput(output, method = "chain", id_par = "λ0")
+# initial speciation rate density
+plot_CladsOutput(output, method = "density", id_par = "λ0")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# you can save the result in R (as .rda file) using for further processing
+save_ClaDS_in_R(output, "<directory>")
 
