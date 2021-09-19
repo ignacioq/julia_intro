@@ -1615,7 +1615,7 @@ Using ClaDS in JPANDA
 =#
 
 using PANDA
-
+using Random
 
 # simulate a tree
 n  = 20    # number of tips
@@ -1624,6 +1624,7 @@ n  = 20    # number of tips
 ε  = 0.3   # turnover
 λ0 = 1.0   # initial speciation rate
 
+Random.seed!(2)
 tree = sim_ClaDS2_ntips(n, σ, α, ε, λ0, 
   prune_extinct = true)
 
@@ -1634,38 +1635,47 @@ n_tips(tree)
 plot_ClaDS(tree)
 
 # make inference
-output = infer_ClaDS(tree)
+clads_output = infer_ClaDS(tree)
+
+# save output in julia format
+using JLD2
+
+@save homedir()*"/repos/julia_intro/" clads_output
+
+# load back to julia
+
+@load homedir()*"/repos/julia_intro/" clads_output
 
 # plot the inferred tree
-plot_CladsOutput(output)
+plot_CladsOutput(clads_output)
 
 # plot the diversity through time plot (DTT)
-plot_CladsOutput(output, method = "DTT")
+plot_CladsOutput(clads_output, method = "DTT")
 
 # plot the mean rate through time plot
-plot_CladsOutput(output, method = "RTT")
+plot_CladsOutput(clads_output, method = "RTT")
 
 ## plot the posterior distributions
 # sigma trace
-plot_CladsOutput(output, method = "chain", id_par = "σ")
+plot_CladsOutput(clads_output, method = "chain", id_par = "σ")
 # sigma density
-plot_CladsOutput(output, method = "density", id_par = "σ")
+plot_CladsOutput(clads_output, method = "density", id_par = "σ")
 
 # alpha trace
-plot_CladsOutput(output, method = "chain", id_par = "α")
+plot_CladsOutput(clads_output, method = "chain", id_par = "α")
 # alpha density
-plot_CladsOutput(output, method = "density", id_par = "α")
+plot_CladsOutput(clads_output, method = "density", id_par = "α")
 
 # turnover trace
-plot_CladsOutput(output, method = "chain", id_par = "ε")
+plot_CladsOutput(clads_output, method = "chain", id_par = "ε")
 # turnover density
-plot_CladsOutput(output, method = "density", id_par = "ε")
+plot_CladsOutput(clads_output, method = "density", id_par = "ε")
 
 # initial speciation rate trace
-plot_CladsOutput(output, method = "chain", id_par = "λ0")
+plot_CladsOutput(clads_output, method = "chain", id_par = "λ0")
 # initial speciation rate density
-plot_CladsOutput(output, method = "density", id_par = "λ0")
+plot_CladsOutput(clads_output, method = "density", id_par = "λ0")
 
 # you can save the result in R (as .rda file) using for further processing
-save_ClaDS_in_R(output, "<directory>")
+save_ClaDS_in_R(clads_output, "<directory>")
 
