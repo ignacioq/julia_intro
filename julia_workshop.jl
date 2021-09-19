@@ -17,7 +17,7 @@ v.   For performance this book:
      Julia High Performance by Avik Sengupta,
      ...but some of it is out of date.
 
-To use the REPL (Read Evaluate Print Loop)
+To use the REPL (Read Evaluate Print Loop) with Sublime Text
 
  - Cmd + Enter sends the code if the line at which the cursor is at.
  - Highlight and Cmd + Enter sends the highlighted code to the REPL
@@ -381,8 +381,8 @@ R"plot(runif(10), runif(10), bty = 'n')"
 
 # Similarly with Python (you need Python installed)
 using PyCall
-nr = pyimport("numpy.random")
-nr.rand(3,4)
+math = pyimport("math")
+math.sin(math.pi / 4)
 
 #= 
 Check the packages documentation for more information
@@ -1787,6 +1787,54 @@ r = SharedArray{Float64}(1_000)
 @distributed for i in 1:1_000
   r[i] = mean(fit(Normal, randn(1_000)))
 end
+
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Composite types (struct)
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+# create a simple book structure
+struct Book
+  title ::String
+  author::String
+  year  ::Int64
+end
+
+# get fieldnames 
+fieldnames(Book)
+
+# construct one instance
+A = Book("The Aeneid", "Virgil", -19)
+
+# get title
+A.title
+getproperty(A, :title)
+
+# change title
+A.title = "Aeneid"
+
+# mutable structures
+mutable struct Dog
+  name  ::String
+  age   ::Int64
+  weigth::Float64
+end
+
+
+N = Dog("Nicanor", 7, 45.3)
+
+# we can now modify the structure
+
+# for instance, when it is his anniversary 
+anniversary!(X::Dog) = X.age += 1
+
+anniversary!(N)
+
+# get new age
+N.age
 
 
 
