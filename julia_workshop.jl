@@ -1619,32 +1619,32 @@ using Random
 
 # simulate a tree
 n  = 20    # number of tips
-σ  = 0.2   # branch heterogeneity
-α  = 1.2   # "drift"
-ε  = 0.3   # turnover
+σ  = 0.1   # branch heterogeneity
+α  = 0.9   # "drift"
+ε  = 0.2   # turnover
 λ0 = 1.0   # initial speciation rate
 
-Random.seed!(2)
+Random.seed!(3)
 tree = sim_ClaDS2_ntips(n, σ, α, ε, λ0, 
   prune_extinct = true)
 
 # check the number of tips
 n_tips(tree)
 
-# plot the tree (using )
+# plot the tree (using R backend)
 plot_ClaDS(tree)
 
 # make inference
+Random.seed!()
 clads_output = infer_ClaDS(tree)
 
 # save output in julia format
 using JLD2
 
-@save homedir()*"/repos/julia_intro/" clads_output
+@save homedir()*"/Desktop/clads_run.jld2" clads_output
 
 # load back to julia
-
-@load homedir()*"/repos/julia_intro/" clads_output
+@load homedir()*"/Desktop/clads_run.jld2" clads_output
 
 # plot the inferred tree
 plot_CladsOutput(clads_output)
