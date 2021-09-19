@@ -66,19 +66,6 @@ pi
 π == pi
 ℯ
 
-# you cannot redefine them
-π = Base.pi
-
-# Do not use `.` in variable names, they represent `fields` in types
-a.1 = 2
-
-# you can use underscores, although discouraged if not necessary
-a_1 = 2
-
-# some few names cannot be used for variables
-else = 2
-end  = "Hi"
-
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -131,20 +118,6 @@ Signed <: Integer
 # `ans` returns the last evaluated value
 typeof(ans)
 
-# `versioninfo()` returns the version and platform
-versioninfo()
-
-# `typemax` & `typemin` gives the maximum possible value
-typemin(Int64)
-typemax(Int64)
-
-# overflow wraps
-x = typemax(Int64)
-x += 1
-
-# x is now the minimum
-x == typemin(Int64)
-
 # convert between types
 x = convert(Int8, 1)
 typeof(x)
@@ -165,10 +138,6 @@ varinfo()
 # and Float32 in 32-bit architecture
 1.0
 typeof(ans)
-
-# the minimum and maximum Float type is -Inf & Inf
-typemin(Float64)
-typemax(Float64)
 
 # Not a Number, `NaN` is a Float64 by default
 NaN
@@ -278,7 +247,6 @@ isapprox(1.00001, 1.0, atol = 1e-2)
 # updates
 x = 1
 x += 1
-x
 
 x /= 0.5
 x *= 0.5
@@ -297,36 +265,6 @@ s2 = "world"
 
 # it works with inside evaluation
 "1+4 = $(1+4)"
-
-
-"""
-Exercise:
-
-1. Guess the result and type of the following commands, then evaluate
-"""
-
-1.0 + 1
-NaN + 2.0
-NaN + 2
-1   + Inf
-Inf - Inf
-Inf * Inf
-Inf * -Inf
-0   * -Inf
-"0" + 0
-3/0
-0/0
-fld(5,3)
-0.0 == -0.0
-0   == -0.0
-NaN == NaN
-isequal(NaN, NaN)
-Inf == Inf
-2/1
-2\1
-div(2,1)
-/("Hello ", "world")
-x = 2; x ^= 4
 
 
 #=
@@ -367,8 +305,8 @@ R"t"
 
 # reval evaluates R code 
 reval("""
-      s   <- array(NA_integer_, dim=c(10,5))
-      s[] <- 1:50 
+      s   <- array(NA_integer_, dim=c(10L,5L))
+      s[] <- 1:50
       s   <- s*4
       """)
 
@@ -381,8 +319,8 @@ R"plot(runif(10), runif(10), bty = 'n')"
 
 # Similarly with Python (you need Python installed)
 using PyCall
-nr = pyimport("numpy.random")
-nr.rand(3,4)
+math = pyimport("math")
+math.sin(math.pi / 4)
 
 #= 
 Check the packages documentation for more information
@@ -427,7 +365,7 @@ x[[2,3]]
 x[2:3]
 typeof(2:3)
 
-# length and lastindex return the length
+# length and lastindex return the length for indexable types
 lastindex(x) == length(x)
 
 # `end` returns the last item
@@ -441,7 +379,7 @@ x
 
 ## initialization
 
-# Boolean vector
+# Boolean vector (BitVector)
 v = trues(10)
 
 # zeros, by default Float64
@@ -486,9 +424,6 @@ sr = 1.0:0.1:2.0
 # transform into a vector
 v = collect(sr)
 
-# this can also be achieved with
-[sr...] == v
-
 
 ## Comprehensions
 # comprehensions create vectors using a loop
@@ -529,14 +464,6 @@ push!(x,7,8,9)
 # add one or more elements at the beggining
 pushfirst!(x,-1,0)
 
-# replace and insert an element at a given index (returs the replaced item)
-x = [1,3,4,5,6]
-splice!(x, 2, 2:3)
-
-# splice also deletes if not provided with a replacement
-splice!(x,3:4)
-x
-
 # remove the last element (and return it)
 pop!(x)
 x
@@ -561,36 +488,6 @@ fill!(x, 1)
 x = [1:5...]
 x[1:5] .= 1
 x
-
-# you can also use fill! to create vectors
-v = fill!(Array{String}(undef, 3), "hello")
-
-# which seems to be as fast as:
-v = fill("hello", 3)
-
-
-
-"""
-Exercises:
-
-1. create a vector of length 10 of type Bool.
-2. What is the required step size to have 16 equally spaced values between
-   1.0 and 3.2?
-3. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up
-   `[1,4,3,2,5]`.
-4. Checkout the `filter!()` function and use it to allow only even values
-   in `[1,2,3,6,7,3,1,10,28]`.
-5. What is the difference between `max()` and `maximum()`.
-6. Learn how to use `setdiff()` and find the length of non shared elements
-   between:
-   a = [2,8,4,9]
-   b = [4,2,3,5]
-7. Using `find()`, equality `==`, and vectorized functions, create a vector
-   with the indices that match 1 for the following vector:
-   `[10,11,1,4,5,1,11,1,3,0,2,-1]`
-8. Search for the function that sorts in place (i.e., ends in `!`) and
-   the function that returns the maximum and minimum of a vector.
-"""
 
 
 ## Multi-Dimensional Arrays
@@ -625,21 +522,12 @@ length(A)
 # fast construction (again)
 A = Array{Float64}(undef,5,5,3)
 
-# repeat a vector along each dimension
-# repeat twice in dim one (rows)
-repeat([1,2,3],2,1)
-# repeat in dim two (cols)
-repeat([1,2,3],1,2)
-
 # 2 dimensional comprehensions
 A = [i*j for i in 1:5, j in 1:5]
 
 # 3 dimensional comprehensions
 A = [i*j*h for i in 1:5, j in 1:5, h = 1:5]
 
-# reshaping
-v = [1:9...]
-A = reshape(v,3,3)
 
 ## indexing along dimensions
 # 1st & 2nd row, and 3 column
@@ -717,23 +605,9 @@ d = Dict("unif" => rand(10),
          "exp"  => randexp(10))
 d["unif"]
 
-d = Dict([1,0,0] => "one",
-         [0,1,0] => "two",
-         [0,0,1] => "three")
-d[[0,1,0]]
-
 # Create a Dictionary using comprehensions
 d = Dict("r$i" => randn() for i = 1:10)
 
-# get allows you to returns another value if the key is not found
-get(d, "r1", NaN)
-get(d, "hi", NaN)
-
-
-# Sets
-# Sets are like arrays but without duplicated elements
-Set([1,1,0])
-typeof(ans)
 
 ## Tuples
 # Tuples are like arrays but cannot be modified, they are immutable
@@ -742,12 +616,6 @@ typeof(t)
 
 # you cannot modify them
 t[1] = 2
-
-# convert a tuple into an array
-a = [t...]
-
-# re convert back to tuple
-t = (a...,)
 
 
 ## Vectorization (broadcasting)
@@ -766,20 +634,6 @@ z = x .* y
 # in functions
 cos.(z)
 log.(z)
-
-
-"""
-Exercises:
-
-1. Create an `Int64` identity matrix (10,10) without using `eye(10)`.
-2. Fill the above object such that it is now a Diagonal matrix with 1:10.
-3. Create a Range that goes from 10 to 1 and then make a new matrix object
-   with 5 rows, where each row is this range.
-4. Create a 3-dimensional array of size `(5,5,3)` where each element is the
-   product of the 1d index with the 2d index elevated to the 3d index.
-5. Create a Dictionary with each integer starting with 1 associated with
-   each letter in the alphabet using comprehensions.
-"""
 
 
 #=
@@ -802,7 +656,7 @@ rand(10)
 rand(10,10)
 
 # Bernoulli trials with p = 0.5
-rand(0:1)
+rand(Bool)
 
 # `rand(S)` uniformly picks a value from the collection S
 S = [4,7,7]
@@ -812,30 +666,18 @@ rand(S)
 randstring(10)
 
 # check that it is uniform pick (1/3 for 7)
-x = [rand(S) for i in 1:10_000]
+x = [rand(S) for i in 1:100_000]
 
 using Statistics
 
 mean(isodd, x)
 
-# draw from the Normal distribution N(0,1)
+# draw from the standard Normal distribution N(0,1)
 randn()
-
-# create an array of Normal draws
-x = randn(10,5)
 
 # fill with new values
 randn!(x)
 
-# draw from Exponential(1.0)
-randexp()
-
-# permute an integer vector of some length
-randperm(10)
-
-# permute a given vector
-v = randperm(10)
-shuffle!(v)
 
 ## basic statistics in library `Statistics`
 x = randn(10_000)
@@ -883,14 +725,6 @@ A * B
 # matrix inverse
 inv(A)
 
-# matrix determinant
-det(A)
-
-# reshape matrix dimensions
-A = reshape([1:9...],3,3)
-
-# rotate 180 degrees
-rot180(A)
 
 # Julia allows you to specify certain characteristics of Matrices to
 # handle them more efficiently (e.g.,Symmetric, UpperTriangular,
@@ -911,18 +745,6 @@ axpy!(2, A, B)
 B
 
 
-"""
-Exercise:
-
-1. Estimate the standard deviation among the differences between the estimated
-   mean of 1_000 `Random.randexp()` and 1.0, for 10_000 replicates (tip: see the
-   documentation of `mean()`).
-2. Let `A = reshape([1:9...],3,3)`, what does circshift(A, (1,1)) do? what does
-   rot180(A)?
-3. Get the eigenvalues for a matrix.
-"""
-
-
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Control Flow
@@ -941,14 +763,6 @@ if x > 4
 end
 y
 
-# if returns a value
-r = if x > 3
-      "$x is greater than 3"
-    elseif x == 3
-      "$x is 3"
-    else
-      "$x is smaller than 3"
-    end
 
 # ternery operators (concise if else statement)
 x = 3; y = 1
@@ -978,53 +792,11 @@ for i in 1:10
   println(i)
 end
 
-"""
-A quick note on scoping:
-
-Scoping rules are relatively intuitive, but since Julia >= 1.0.0, 
-loops do not allow modifying global variables (such as those that have been
-assigned in the REPL), which, when in REPL, makes
-it less straightforward to use.
-"""
-
-# for instance, this does not work
-j = 0
-for i in 1:5
-  j += i
-end
-# because the loop does not search for variables in the global scope.
-# This is for efficiency (avoiding global variable definitions is, 
-# overall, better coding) and follows "good" coding standards.
-
-# However, loops do allow modification to the parent scope as long as is local:
-for j in 1:2
-  j = 0
-  for i in 1:5
-    j += i
-    println((j, i))
-  end
-end
-
-#To allow the modification of global variables there are two options, 
-# surround in a `let` block, such like
-let j = 0
-  for i in 1:5
-    j += i
-  end
-  println(j)
-end
-
-# or declare that the variable is actually global, and now the loop
-# will look for global variables.
-j = 0
-for i in 1:5
-  global j += i
-end
-println(j)
 
 #=
-so just, for illustration, in the following loops we have included the global
-keyword to allow modifying, but you should never include this in your 
+In the following loops we have included the `global` keyword to 
+make explicit the inefficiency of using global variables
+in the local scope, but you should never include this in your 
 actual code
 =#
 
@@ -1058,16 +830,8 @@ end
 
 # a more concise syntax
 for j in 1:5, i in 1:5
-  println("i -> ",i," and j -> ", j)
+  println("i -> ",i," & j -> ", j)
 end
-
-# NOTE: with string, it is more efficient to not use the interpolation `$` when
-# concatenating strings
-s = "hola"
-# this is better
-*(s, " gente")
-# than this
-"$s gente"
 
 # iterate over a collection
 S = [1, 10, NaN]
@@ -1091,14 +855,9 @@ for i = eachindex(v)
   println(i)
 end
 
-# create a tuple with the iteration and the value of `v`
-for i = enumerate(v)
-  println(i)
-end
-
 # assign the iteration and the value in the loop
 for (i,v) = enumerate(v)
-  println(i, v)
+  println(i,' ', v)
 end
 
 # Most efficient loop if looping over a `UnitRange` that starts at `1`
@@ -1108,16 +867,6 @@ end
 
 # `enumerate()` is a great way to create a Dictionary
 d = Dict(i => v for (i,v) in enumerate(v))
-
-# iterate over dictionary keys
-for k in keys(d)
-  println(k+1)
-end
-
-# iterate over dictionary values
-for val in values(d)
-  println(val)
-end
 
 # iterating over dictionary return tuple of (key, value)
 for (k,v) in d
@@ -1146,16 +895,6 @@ we iterate first over rows first `i` and then columns `j`, thus
 accessing items in the memory order).
 =#
 
-"""
-Exercises:
-
-1. Create a for loop to estimate the product over all the elements in a
-   matrix (10,6) except those on the 5th column.
-2. Create a while loop to estimate the number of times you have to sum a
-   number with itself until it is larger than 200, starting with 1.
-3. Create a for loop for the first ten integers where you print the integer
-   as a number if it is odd, and as a string if even.
-"""
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1189,15 +928,8 @@ f(-4)
 # do not be afraid of loops!
 f.(-3:3)
 
-# z will not be defined in the outer scope
-function f(x)
-  z = 1
-  x + z
-end
-f(2)
-z
 
-# but already defined variables can be changed
+# Already defined variables can be changed
 function fill_with_ones!(x)
   x[:] .= 1
   return nothing
@@ -1285,37 +1017,7 @@ rnorm(μ::Float64, σ::Float64) = μ + randn()*σ
 @benchmark logdnorm(1.0, 0.5, 1.0)
 @benchmark rnorm(0.5, 1.0)
 
-"""
-Exercises:
-
-1. Benchmark the creation of a vector using these alternatives:
-   i.   `zeros(100)` 
-   ii.  `fill(2.5, 100)` 
-   iii. `Array{Float64,1}(undef, 100)`
-2. Is it faster to use `Array{Float64,1}(undef, 100)` and then fill the 
-   vector with zeros instead of using `zeros()`? (tip: use `begin` 
-   evaluation `end` to benchmark several lines) 
-"""
-
 #######
-
-
-## anonymous functions
-# the syntax is: `input` -> `return`
-x -> x + 10
-
-# can be used on several functions, such as
-# map function
-map(x -> x + 10, 0:0.1:1)
-
-# you can use any predefined function
-map(cos, 0:π/4:2π)
-
-# for more than one argument, use a tuple
-map((x,y) -> x + y, [1:10...], [2:11...])
-
-# can also be empty (here, of course, is useless)
-map(() -> rand(0:1,10))
 
 
 ### Multiple dispatch
@@ -1439,9 +1141,6 @@ end
 
 prodsum(1,2,3)
 
-# this does not work
-prodsum(1, z = 3, y = 2)
-
 # Keyword arguments are optional arguments and are matched by name
 # we can use keywords
 function prodsum(x; y = 1, z = 2)
@@ -1467,28 +1166,7 @@ sum_prod(rand(10))
 
 # you can assign by order
 sum_x, prod_x = sum_prod(rand(10))
-@show sum_x
-@show prod_x
 
-
-"""
-Exercises:
-
-1. Create a simple function for Bernoulli trials with an input `p` 
-   for the probability of success.
-2. Create a function that always returns the number of times you have
-   called it.
-3. Use the `findall()` function to find the indexes of the elements that match
-   10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. (tip: find can use
-   anonymous functions as `map()`)
-4. Create a `bang` (i.e., `!`) function that successfully changes an array in
-   place in some way.
-5. Create a function where you sum over all elements of a matrix with
-   a nested loop. Determine which is more efficient: looping over the
-   columns in the outer loop or over the rows. Why is there a difference?
-6. Create a type stable function that takes a numeric vector and returns the
-   cumulative sums vector. Then compare the performance with Base's `cumsum()`.
-"""
 
 
 #=
@@ -1531,21 +1209,6 @@ quantile.(gauss, [0.025, 0.5, 0.975])
 # distribution Type (using MLE by default)
 gfit = fit(Normal, rand(gauss, 10))
 
-## Statistics evaluation
-mean(gfit)
-var(gfit)
-quantile.(gfit, [0.1, 0.9])
-mode(gfit)
-entropy(gfit)
-minimum(gfit)
-# there other descriptive statistics...
-
-"""
-Exercise:
-
-1. Draw 10 samples from a Poisson with mean of 3.5. Fit these draws using
-   to a Poisson and return the mean and 95% quantiles.
-"""
 
 ## Probability evaluation
 
@@ -1562,50 +1225,6 @@ loglikelihood(gfit,[2.0,3.4,1.3])
 # PDFs in logarithmic space for likelihood evaluation as I found them 
 # to be much faster
 
-# cumulative density function
-cdf(gfit, 3.)
-
-# you can truncate any distribution
-tcau = Truncated(Cauchy(), 0.0, Inf)
-
-# check that it is truncated
-cdf(tcau, 0.0)
-cdf(Cauchy(), 0.0)
-
-## Multivariate Distributions
-mvmean = [1.0,2.0,1.5]
-Σ      = [1.0 0.2 0.9;
-          0.2 1.0 0.5;
-          0.9 0.5 1.0]
-
-mvn = MvNormal(mvmean,Σ)
-
-# most functions for univariate distributions 
-# work for multivariate distributions
-logpdf(mvn, [1.1,2.1,1.1])
-rand(mvn,10)
-
-# additional functions such as
-# Mahalanobis distance 
-sqmahal(mvn, [.1,2.1,1.1])
-
-
-# You can also construct Mixture-Models
-mixd = MixtureModel(Normal,                               # if all are normals
-                   [(-2.0, 1.2), (0.0, 1.0), (3.0, 2.5)], # parameters
-                   [0.2, 0.5, 0.3])                       # prior probabilities
-mean(mixd)
-var(mixd)
-logpdf(mixd, 0.1)
-
-
-"""
-Exercise:
-
-1. Create a matrix of Floats with dimensions (3,10) and estimate 
-   the Multivariate Normal that best describes this data.
-"""
-
 ## DataFrames are similar to data.frames in R
 # Pkg.add("DataFrames")
 using DataFrames
@@ -1616,134 +1235,6 @@ typeof(ans)
 
 # columns types 
 eltype.(eachcol(df))
-
-# summary stats
-describe(df)
-
-# column names 
-names(df)
-
-# by Type (note how DataFrames allow for `NA`)
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 10)
-
-# first and last
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 100)
-first(df, 6)
-last(df, 3)
-
-# comprehensions
-df = DataFrame([randn(10) for i in 1:5])
-
-# array conversion
-df = DataFrame(rand(20,5))
-
-## indexing is similar than in arrays
-# columns
-df[:,1]
-
-# but also 
-df[!,2]      # by number
-df[!,:x2]    # by name
-
-# rows
-df[4,:]
-
-# sort rows in place
-sort!(df, :x2)
-
-# sort rows according to more than one column
-# here first by column 1 in reverse sort, then column 3 in normal sort 
-sort!(df, (:1,:3), rev = (true,false))
-
-# delete a row
-deleterows!(df, 3:4)
-
-# unique rows (also accepts in place `unique!`)
-unique(df)
-
-
-"""
-Exercise:
-
-1. Create a DataFrame with four columns of type String, Float64, 
-   Int64, and Int64, respectively, and 15 rows, allow both Int 
-   Columns to accept missing values and assign a few.
-2. Order the above DataFrame by the first column (String).
-"""
-
-
-#=
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-I/O
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-=#
-
-"""
-Please download the iris.csv dataset from https://github.com/ignacioq/julia_intro
-"""
-
-## Basic (less streamlined)
-# open a connection to the file
-file = open(homedir()*"/repos/julia_intro/iris.csv")
-
-# read all lines
-lines = readlines(file)
-
-#=
-you can then loop through the lines using something like
-for line in lines
-  `do something`
-end
-=#
-
-# you should close the connection
-close(file)
-
-# use DelimitedFiles package
-using DelimitedFiles
-
-# readdlm is a basic Array reader
-readdlm(homedir()*"/repos/julia_intro/iris.csv", ',')
-
-# `writedlm(file, array)` writes Arrays to a file.
-# but we are not going to write anything here
-
-## CSV works great with DataFrames
-# Pkg.add("CSV")
-using CSV
-
-# load the (never used before) Iris Data Set (change your wd 
-# to the specific directory)
-iris = CSV.read(homedir()*"/repos/julia_intro/iris.csv")
-
-describe(iris)
-size(iris)
-names(iris)
-
-## Using JLD (Julia Native Format, faster)
-# Pkg.add("JLD")
-using JLD
-
-# define some variables
-x = 3.5
-t = randn(2,10)
-
-# the syntax of save is `file`, `save var with name`, `var`, ...
-save(homedir()*"/repos/julia_intro/work.jld", "var1", x, "var2", t)
-
-# load variables (as dictionary)
-d = load(homedir()*"/repos/julia_intro/work.jld")
-
-# load one of the variables
-x = load(homedir()*"/repos/julia_intro/work.jld", "var1")
-
-
-"""
-Exercise:
-
-1. Read the iris data into a DataFrame pointing to the right file path. Then
-   make sure all the columns have appropriate types. 
-"""
 
 
 #=
@@ -1776,7 +1267,7 @@ workers()
 
 # post loop aggregation, here summing over the result
 n1 = @distributed (+) for i in 1:10_000
-  rand(0:1)
+  rand(Bool)
 end
 
 
@@ -1839,7 +1330,13 @@ x[1] = 0.0
 
 # `y` is 4 `parallel` multivariate functions under Brownian motion
 y = randn(100, 4)
+y[1,:] .= 0.0
 cumsum!(y, y, dims = 1)
+
+
+using Plots
+plot(x, y)
+
 
 
 ## First we need a linear interpolation function
@@ -2106,7 +1603,42 @@ reval("""
 
 r1    # R results
 r[1]  # Julia result
-# same answer but WAY faster!
+# same answer but ~ 2 orders of magnitude faster!
+
+
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Using ClaDS
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
