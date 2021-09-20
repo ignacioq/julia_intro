@@ -450,7 +450,7 @@ isa(u, Vector{Vector{Vector{Float64}}})
 ## Functions on vectors
 # fuse two vectors
 x = [1:3...]
-append!(x,4:5)
+append!(x, 4:5)
 x
 
 """
@@ -531,7 +531,7 @@ A = [i*j*h for i in 1:5, j in 1:5, h = 1:5]
 
 ## indexing along dimensions
 # 1st & 2nd row, and 3 column
-A[1:2,3]
+A[1:2,3,:]
 
 # index first row
 A[1,:]
@@ -646,7 +646,7 @@ Basic statistical and linear algebra utilities
 rand()
 
 # `Random.seed!()` sets random seed number
-Random.seed!(123)
+Random.seed!(1)
 rand(10)
 
 Random.seed!(123)
