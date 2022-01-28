@@ -28,6 +28,8 @@ fp(1)
 fp(1,3)
 
 
+@code_warntype fp(1,3)
+
 ## parametric multiple dispatch
 # set the same type for arguments
 function sum_same_type(x::T, y::T) where {T}
@@ -38,6 +40,10 @@ end
 sum_same_type(1, 2)
 sum_same_type(1.0, 2.0)
 
+
+f(x, y, z) = x + y + z
+
+@code_warntype f(1.0, 1, 2)
 
 #= 
  we can also combine both parametric methods
