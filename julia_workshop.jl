@@ -1861,8 +1861,8 @@ a function y = f(x).
 x = cumsum(rand(100))
 x[1] = 0.0
 
-# `y` is 4 `parallel` multivariate functions under Brownian motion
-y = randn(100, 4)
+# `y` is 100 `parallel` multivariate functions under Brownian motion
+y = randn(100, 100)
 cumsum!(y, y, dims = 1)
 
 
@@ -2078,7 +2078,7 @@ end
 
 # example
 r = Array{Float64,1}(undef,size(y,2)) # preallocate resulting interpolation
-approxf_full!(5., r, x, y, Val{size(y,2)})
+approxf_full!(5., r, x, y, Val(size(y,2)))
 r
 
 # compare to a non generated function
@@ -2116,7 +2116,7 @@ using Profile, ProfileView
 
 Profile.clear()
 
-@profile for i in 1:1_000_000 approxf_full_std!(5., r, x, y) end
+@profile for i in 1:1_000_000 approxf_full_std!(20., r, x, y) end
 
 Profile.print()
 ProfileView.view()
@@ -2133,9 +2133,9 @@ reval("""
   require(microbenchmark)
 
   f = approxfun(x, y[,1])
-  r1 = f(5.) # evaluate at 5.0
+  r1 = f(5.0) # evaluate at 5.0
 
-  microbenchmark(f(5.))
+  microbenchmark(f(5.0))
       """)
 
 # check that we get the same answer
