@@ -12,10 +12,12 @@ Some Documentation:
 i.   the official: https://docs.julialang.org/en/v1/
 ii.  wiki books: https://en.wikibooks.org/wiki/Introducing_Julia
 iii. Slack: julialang.slack.com. Very active and responsive community
-iv.  stack overflow...
-v.   For performance this book:
+iv. Zulip: julialang.zulipchat.com. Very active and responsive community
+v.  stack overflow...
+vi.   For performance this book:
      Julia High Performance by Avik Sengupta,
      ...but some of it is out of date.
+
 
 To use the REPL (Read Evaluate Print Loop) with Sublime Text
 
