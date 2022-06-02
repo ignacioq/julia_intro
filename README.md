@@ -14,7 +14,7 @@ For Atom and Juno (maintenance-only) follow the instructions on their web page h
 (If you are on Windows [which I do not use], you need to have `Cmder`, `ConEmu` or similar installed and be able to open the Julia REPL from there; otherwise, please use VSCode).
 
 1. Download and install the latest version of Julia (> v1.5) here: https://julialang.org/downloads/
-2. Download and install Sublime Text 3 here: https://www.sublimetext.com/download.
+2. Download and install Sublime Text here: https://www.sublimetext.com/download.
 3. Open Sublime Text and install the Package Manager following these instructions: https://packagecontrol.io/installation.
 4. Restart Sublime Text.
 5. Open the Package Manager by typing `Cmd + Shift + p` (`Ctrl + Shift + p` in Windows).
