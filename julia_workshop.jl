@@ -1417,20 +1417,19 @@ elem_sum([1,2,3],[1,2,3])
 elem_sum(rand(10,10),rand(10,10))
 
 # multiple dispatch with values
-function fval(x::Int64, ::Type{Val{1}})
+function fval(x::Int64, ::Val{1})
   (x + 10)/2
 end
 
-function fval(x::Int64, ::Type{Val{2}})
+function fval(x::Int64, ::Val{2})
   (x + 10)^2
 end
 
 # to evaluate, you need `Val{}` again
 x = 1
 y = 2
-fval(5, Val{x})
-fval(5, Val{y})
-
+fval(5, Val(x))
+fval(5, Val(y))
 
 # Arguments are passed in order
 function prodsum(x, y, z)
@@ -2098,7 +2097,9 @@ function approxf_full_std!(t ::Float64,
         r[i] = linpred(t, xa, xap1, y[a, i], y[a + 1, i])::Float64
       end
     else
+      for i = Base.OneTo(size(y,2))
         r[i] = y[a, i]::Float64
+      end
     end
   end
 
@@ -2108,6 +2109,17 @@ end
 @benchmark approxf_full!(5., $r, $x, $y, $(Val(size(y,2))))
 @benchmark approxf_full_std!(5., $r, $x, $y)
 
+
+
+# lets profile to check for any bottlenecks
+using Profile, ProfileView
+
+Profile.clear()
+
+@profile for i in 1:1_000_000 approxf_full_std!(5., r, x, y) end
+
+Profile.print()
+ProfileView.view()
 
 
 #=
