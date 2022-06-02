@@ -984,12 +984,11 @@ end
 A quick note on scoping:
 
 Scoping rules are relatively intuitive, but since Julia >= 1.0.0, 
-loops do not allow modifying global variables (such as those that have been
-assigned in the REPL), which, when in REPL, makes
-it less straightforward to use.
+loops do not allow modifying global variables except when in the REPL 
+(since Julia >= 1.5).
 """
 
-# for instance, this does not work
+# for instance, this work but is not recommended
 j = 0
 for i in 1:5
   j += i
@@ -1007,7 +1006,7 @@ for j in 1:2
   end
 end
 
-#To allow the modification of global variables there are two options, 
+#To allow the efficient modification of global variables there are two options, 
 # surround in a `let` block, such like
 let j = 0
   for i in 1:5
@@ -1026,8 +1025,7 @@ println(j)
 
 #=
 so just, for illustration, in the following loops we have included the global
-keyword to allow modifying, but you should never include this in your 
-actual code
+keyword for the REPL, but is not needed unless within a local scope.
 =#
 
 # while loops
@@ -1397,7 +1395,7 @@ elem_prod([1.0,2.0,3.0], [1.0,2.0,3.0])
 # and this (note that these are Matrices)
 elem_prod([1.0 2.0 3.0], [1.0 2.0 3.0])
 
-# but this don't
+# but this doesn't
 elem_prod([1.0,2.0,3.0], [1.0 2.0 3.0])
 
 
@@ -1625,40 +1623,19 @@ describe(df)
 # column names 
 names(df)
 
-# by Type (note how DataFrames allow for `NA`)
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 10)
-
-# first and last
-df = DataFrame([Float64, Int64, Float64, Any], [:C1, :C2, :C3, :C4], 100)
-first(df, 6)
-last(df, 3)
-
-# comprehensions
-df = DataFrame([randn(10) for i in 1:5])
-
-# array conversion
-df = DataFrame(rand(20,5))
-
 ## indexing is similar than in arrays
 # columns
 df[:,1]
 
 # but also 
-df[!,2]      # by number
-df[!,:x2]    # by name
+df[:,2]      # by number
+df[:,:A]    # by name
 
 # rows
 df[4,:]
 
 # sort rows in place
-sort!(df, :x2)
-
-# sort rows according to more than one column
-# here first by column 1 in reverse sort, then column 3 in normal sort 
-sort!(df, (:1,:3), rev = (true,false))
-
-# delete a row
-deleterows!(df, 3:4)
+sort!(df, :B)
 
 # unique rows (also accepts in place `unique!`)
 unique(df)
@@ -1716,28 +1693,26 @@ using CSV
 
 # load the (never used before) Iris Data Set (change your wd 
 # to the specific directory)
-iris = CSV.read(homedir()*"/repos/julia_intro/iris.csv")
+iris = CSV.read(homedir()*"/repos/julia_intro/iris.csv", DataFrame)
 
 describe(iris)
 size(iris)
 names(iris)
 
-## Using JLD (Julia Native Format, faster)
-# Pkg.add("JLD")
-using JLD
+## Using JLD2 (Julia Native Format, faster)
+# Pkg.add("JLD2")
+using JLD2
 
 # define some variables
 x = 3.5
 t = randn(2,10)
 
 # the syntax of save is `file`, `save var with name`, `var`, ...
-save(homedir()*"/repos/julia_intro/work.jld", "var1", x, "var2", t)
+@save homedir()*"/repos/julia_intro/work.jld2" x t
 
 # load variables (as dictionary)
-d = load(homedir()*"/repos/julia_intro/work.jld")
+@load "/Users/quintero/repos/julia_intro/work.jld2"
 
-# load one of the variables
-x = load(homedir()*"/repos/julia_intro/work.jld", "var1")
 
 
 """
@@ -1893,7 +1868,6 @@ cumsum!(y, y, dims = 1)
 
 
 ## First we need a linear interpolation function
-
 """
     linpred(val::Float64, x1::Float64, x2::Float64, y1::Float64, y2::Float64)
 
@@ -2042,7 +2016,7 @@ Returns the values of `y` at `t` using an approximation function.
                                   r ::Array{Float64,1},
                                   x ::Array{Float64,1}, 
                                   y ::Array{Float64,N},
-                                  ::Type{Val{nc}}) where {N, nc}
+                                  ::Val{nc}) where {N, nc}
 
   lex1 = quote end
   pop!(lex1.args)
@@ -2112,8 +2086,7 @@ r
 function approxf_full_std!(t ::Float64,
                            r ::Array{Float64,1},
                            x ::Array{Float64,1}, 
-                           y ::Array{Float64,N},
-                           nc::Int64) where {N}
+                           y ::Array{Float64,N}) where {N}
 
   @inbounds begin
     a, lp = idxrange(x, t)::Tuple{Int64, Bool}
@@ -2121,7 +2094,7 @@ function approxf_full_std!(t ::Float64,
     if lp
       xa = x[a]::Float64
       xap1 = x[a + 1]::Float64
-      for i = Base.OneTo(nc)
+      for i = Base.OneTo(size(y,2))
         r[i] = linpred(t, xa, xap1, y[a, i], y[a + 1, i])::Float64
       end
     else
@@ -2132,8 +2105,10 @@ function approxf_full_std!(t ::Float64,
   return nothing
 end
 
-@benchmark approxf_full!(5., $r, $x, $y, $(Val{(size(y,2))}))
-@benchmark approxf_full_std!(5., $r, $x, $y, $(size(y,2)))
+@benchmark approxf_full!(5., $r, $x, $y, $(Val(size(y,2))))
+@benchmark approxf_full_std!(5., $r, $x, $y)
+
+
 
 #=
 Finally, let's compare to a similar R function that is implemented in C 
