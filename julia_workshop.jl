@@ -587,7 +587,7 @@ Exercises:
    between:
    a = [2,8,4,9]
    b = [4,2,3,5]
-7. Using `find()`, equality `==`, and vectorized functions, create a vector
+7. Using `findall()`, equality `==`, and vectorized functions, create a vector
    with the indices that match 1 for the following vector:
    `[10,11,1,4,5,1,11,1,3,0,2,-1]`
 8. Search for the function that sorts in place (i.e., ends in `!`) and
@@ -814,7 +814,7 @@ rand(S)
 randstring(10)
 
 # check that it is uniform pick (1/3 for 7)
-x = [rand(S) for i in 1:10_000]
+x = [rand(S) for i in 1:100_000]
 
 using Statistics
 
@@ -872,6 +872,7 @@ A .+ 1.0
 
 # change in place
 using LinearAlgebra
+
 rmul!(A, 2.0)
 
 # matrix sum
@@ -1156,6 +1157,8 @@ Exercises:
 3. Create a for loop for the first ten integers where you print the integer
    as a number if it is odd, and as a string if even.
 """
+
+
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1466,6 +1469,7 @@ sum_prod(rand(10))
 
 # you can assign by order
 sum_x, prod_x = sum_prod(rand(10))
+
 @show sum_x
 @show prod_x
 
@@ -1729,7 +1733,6 @@ Basic Parallel computing
 =#
 
 # open julia with `-p <ncores>` parameter
-
 using Distributed
 
 # how many workers?
