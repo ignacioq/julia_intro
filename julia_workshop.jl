@@ -301,36 +301,6 @@ s2 = "world"
 "1+4 = $(1+4)"
 
 
-"""
-Exercise:
-
-1. Guess the result and type of the following commands, then evaluate
-"""
-
-1.0 + 1
-NaN + 2.0
-NaN + 2
-1   + Inf
-Inf - Inf
-Inf * Inf
-Inf * -Inf
-0   * -Inf
-"0" + 0
-3/0
-0/0
-fld(5,3)
-0.0 == -0.0
-0   == -0.0
-NaN == NaN
-isequal(NaN, NaN)
-Inf == Inf
-2/1
-2\1
-div(2,1)
-/("Hello ", "world")
-x = 2; x ^= 4
-
-
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  Integrating with shell, R and Python
@@ -571,30 +541,6 @@ v = fill!(Array{String}(undef, 3), "hello")
 v = fill("hello", 3)
 
 
-
-"""
-Exercises:
-
-1. create a vector of length 10 of type Bool.
-2. What is the required step size to have 16 equally spaced values between
-   1.0 and 3.2?
-3. Start with this vector `[1,2,3,4,5]` and, using only `splice!()`, end up
-   `[1,4,3,2,5]`.
-4. Checkout the `filter!()` function and use it to allow only even values
-   in `[1,2,3,6,7,3,1,10,28]`.
-5. What is the difference between `max()` and `maximum()`.
-6. Learn how to use `setdiff()` and find the length of non shared elements
-   between:
-   a = [2,8,4,9]
-   b = [4,2,3,5]
-7. Using `findall()`, equality `==`, and vectorized functions, create a vector
-   with the indices that match 1 for the following vector:
-   `[10,11,1,4,5,1,11,1,3,0,2,-1]`
-8. Search for the function that sorts in place (i.e., ends in `!`) and
-   the function that returns the maximum and minimum of a vector.
-"""
-
-
 ## Multi-Dimensional Arrays
 
 # compare the construction
@@ -770,19 +716,6 @@ cos.(z)
 log.(z)
 
 
-"""
-Exercises:
-
-1. Create an `Int64` identity matrix (10,10) without using `eye(10)`.
-2. Fill the above object such that it is now a Diagonal matrix with 1:10.
-3. Create a Range that goes from 10 to 1 and then make a new matrix object
-   with 5 rows, where each row is this range.
-4. Create a 3-dimensional array of size `(5,5,3)` where each element is the
-   product of the 1d index with the 2d index elevated to the 3d index.
-5. Create a Dictionary with each integer starting with 1 associated with
-   each letter in the alphabet using comprehensions.
-"""
-
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -870,9 +803,10 @@ A .+ 1.0
 # scalar product
 2.0A
 
-# change in place
+# load library for Linear Algebra
 using LinearAlgebra
 
+# change in place
 rmul!(A, 2.0)
 
 # matrix sum
@@ -892,8 +826,6 @@ det(A)
 # reshape matrix dimensions
 A = reshape([1:9...],3,3)
 
-# rotate 180 degrees
-rot180(A)
 
 # Julia allows you to specify certain characteristics of Matrices to
 # handle them more efficiently (e.g.,Symmetric, UpperTriangular,
@@ -910,20 +842,59 @@ B/1.5
 # for instance, `axpy!(s,X,Y)` performs `s*X + Y` and overwrites in Y
 A = rand(5,5)
 B = ones(5,5)
-axpy!(2, A, B)
+axpy!(2.0, A, B)
 B
 
 
-"""
-Exercise:
 
-1. Estimate the standard deviation among the differences between the estimated
-   mean of 1_000 `Random.randexp()` and 1.0, for 10_000 replicates (tip: see the
-   documentation of `mean()`).
-2. Let `A = reshape([1:9...],3,3)`, what does circshift(A, (1,1)) do? what does
-   rot180(A)?
-3. Get the eigenvalues for a matrix.
 """
+Exercises 01
+"""
+
+
+
+#=
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Composite types (struct)
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+=#
+
+# create a simple book structure
+struct Book
+  title ::String
+  author::String
+  year  ::Int64
+end
+
+# get fieldnames 
+fieldnames(Book)
+
+# construct one instance
+A = Book("The Aeneid", "Virgil", -19)
+
+# get title
+A.title
+getproperty(A, :title)
+
+# change title
+A.title = "Aeneid"
+
+# with mutable structures we can now modify the structure
+mutable struct Dog
+  name  ::String
+  age   ::Int64
+  weigth::Float64
+end
+
+
+N = Dog("Nicanor", 7, 45.3)
+
+# for instance, when it is his anniversary 
+N.age += 1
+
+# get new age
+N.age
+
 
 
 #=
@@ -984,9 +955,8 @@ end
 """
 A quick note on scoping:
 
-Scoping rules are relatively intuitive, but since Julia >= 1.0.0, 
-loops do not allow modifying global variables except when in the REPL 
-(since Julia >= 1.5).
+Scoping rules are relatively intuitive, but since Julia >= 1.5, 
+loops do not allow modifying global variables except when in the REPL.
 """
 
 # for instance, this work but is not recommended
@@ -1147,18 +1117,6 @@ we iterate first over rows first `i` and then columns `j`, thus
 accessing items in the memory order).
 =#
 
-"""
-Exercises:
-
-1. Create a for loop to estimate the product over all the elements in a
-   matrix (10,6) except those on the 5th column.
-2. Create a while loop to estimate the number of times you have to sum a
-   number with itself until it is larger than 200, starting with 1.
-3. Create a for loop for the first ten integers where you print the integer
-   as a number if it is odd, and as a string if even.
-"""
-
-
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1287,18 +1245,6 @@ rnorm(μ::Float64, σ::Float64) = μ + randn()*σ
 
 @benchmark logdnorm(1.0, 0.5, 1.0)
 @benchmark rnorm(0.5, 1.0)
-
-"""
-Exercises:
-
-1. Benchmark the creation of a vector using these alternatives:
-   i.   `zeros(100)` 
-   ii.  `fill(2.5, 100)` 
-   iii. `Array{Float64,1}(undef, 100)`
-2. Is it faster to use `Array{Float64,1}(undef, 100)` and then fill the 
-   vector with zeros instead of using `zeros()`? (tip: use `begin` 
-   evaluation `end` to benchmark several lines) 
-"""
 
 #######
 
@@ -1474,24 +1420,15 @@ sum_x, prod_x = sum_prod(rand(10))
 @show prod_x
 
 
-"""
-Exercises:
 
-1. Create a simple function for Bernoulli trials with an input `p` 
-   for the probability of success.
-2. Create a function that always returns the number of times you have
-   called it.
-3. Use the `findall()` function to find the indexes of the elements that match
-   10 in this vector `[1,2,10,3,2,1,10,5,1,2,2,10]`. (tip: find can use
-   anonymous functions as `map()`)
-4. Create a `bang` (i.e., `!`) function that successfully changes an array in
-   place in some way.
-5. Create a function where you sum over all elements of a matrix with
-   a nested loop. Determine which is more efficient: looping over the
-   columns in the outer loop or over the rows. Why is there a difference?
-6. Create a type stable function that takes a numeric vector and returns the
-   cumulative sums vector. Then compare the performance with Base's `cumsum()`.
 """
+Exercises 02
+"""
+
+
+
+
+
 
 
 #=
@@ -1543,12 +1480,6 @@ entropy(gfit)
 minimum(gfit)
 # there other descriptive statistics...
 
-"""
-Exercise:
-
-1. Draw 10 samples from a Poisson with mean of 3.5. Fit these draws using
-   to a Poisson and return the mean and 95% quantiles.
-"""
 
 ## Probability evaluation
 
@@ -1602,13 +1533,6 @@ var(mixd)
 logpdf(mixd, 0.1)
 
 
-"""
-Exercise:
-
-1. Create a matrix of Floats with dimensions (3,10) and estimate 
-   the Multivariate Normal that best describes this data.
-"""
-
 ## DataFrames are similar to data.frames in R
 # Pkg.add("DataFrames")
 using DataFrames
@@ -1644,15 +1568,6 @@ sort!(df, :B)
 unique(df)
 
 
-"""
-Exercise:
-
-1. Create a DataFrame with four columns of type String, Float64, 
-   Int64, and Int64, respectively, and 15 rows, allow both Int 
-   Columns to accept missing values and assign a few.
-2. Order the above DataFrame by the first column (String).
-"""
-
 
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1660,9 +1575,6 @@ I/O
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 =#
 
-"""
-Please download the iris.csv dataset from https://github.com/ignacioq/julia_intro
-"""
 
 ## Basic (less streamlined)
 # open a connection to the file
@@ -1718,14 +1630,6 @@ t = randn(2,10)
 
 
 
-"""
-Exercise:
-
-1. Read the iris data into a DataFrame pointing to the right file path. Then
-   make sure all the columns have appropriate types. 
-"""
-
-
 #=
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Basic Parallel computing
@@ -1768,53 +1672,9 @@ r = SharedArray{Float64}(1_000)
 end
 
 
-
-#=
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Composite types (struct)
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-=#
-
-# create a simple book structure
-struct Book
-  title ::String
-  author::String
-  year  ::Int64
-end
-
-# get fieldnames 
-fieldnames(Book)
-
-# construct one instance
-A = Book("The Aeneid", "Virgil", -19)
-
-# get title
-A.title
-getproperty(A, :title)
-
-# change title
-A.title = "Aeneid"
-
-# mutable structures
-mutable struct Dog
-  name  ::String
-  age   ::Int64
-  weigth::Float64
-end
-
-
-N = Dog("Nicanor", 7, 45.3)
-
-# we can now modify the structure
-
-# for instance, when it is his anniversary 
-anniversary!(X::Dog) = X.age += 1
-
-anniversary!(N)
-
-# get new age
-N.age
-
+"""
+Exercises 03
+"""
 
 
 #=
