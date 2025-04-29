@@ -320,6 +320,7 @@ run(shcom)
 
 # install any package with Pkg.add("PackageName")
 
+
 ## Integrating with R
 # load package (you need R installed)
 using RCall
@@ -429,7 +430,7 @@ v = zeros(Int64,10)
 v = ones(10)
 
 # create a vector with any value
-v = fill(NaN,10)
+v = fill(NaN, 10)
 v = fill("hi", 10)
 
 ## UnitRange and StepRange
@@ -505,7 +506,7 @@ push!(x,7,8,9)
 # add one or more elements at the beggining
 pushfirst!(x,-1,0)
 
-# replace and insert an element at a given index (returs the replaced item)
+# replace and insert an element at a given index (returns the replaced item)
 x = [1,3,4,5,6]
 splice!(x, 2, 2:3)
 
@@ -1343,7 +1344,7 @@ sum_number("1", "1")
 function elem_prod(x::Array{Float64,N}, y::Array{Float64,N}) where {N}
   s = Array{Float64,N}(undef,size(x))
   for i in eachindex(x)
-    s[i] = x[i] + y[i]
+    s[i] = x[i] * y[i]
   end
   return s
 end
